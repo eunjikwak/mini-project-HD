@@ -70,6 +70,7 @@ public class MemberDAO {
             Common.close(conn);
         }catch(Exception e){
             e.printStackTrace();
+
         }
         return list;
     }
