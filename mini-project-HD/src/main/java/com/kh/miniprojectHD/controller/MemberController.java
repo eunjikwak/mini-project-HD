@@ -16,8 +16,8 @@ import java.util.Map;
 public class MemberController {
 
     //Get :회원조회
-    @GetMapping("/member/{name}")
-    public ResponseEntity<List<MemberVO>> memberList(@PathVariable("name") String name){
+    @GetMapping("/member")
+    public ResponseEntity<List<MemberVO>> memberList(@RequestParam String name){
         MemberDAO dao = new MemberDAO();
         List<MemberVO> list = dao.memberSelect(name);
         return new ResponseEntity<>(list, HttpStatus.OK);
