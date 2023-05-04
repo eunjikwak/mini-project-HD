@@ -13,6 +13,7 @@ public class ReviewVO {
     private int reviewId;
     private String memId;
     private String restId;
+    private String restName;
     private String reviewTitle;
     private String reviewContent;
     private String reviewFileName;

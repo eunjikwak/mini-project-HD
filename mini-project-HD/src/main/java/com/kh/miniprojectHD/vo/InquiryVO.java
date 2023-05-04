@@ -11,8 +11,10 @@ import java.sql.Date;
 @AllArgsConstructor
 public class InquiryVO {
     private int inquiryId;
+
     private String memId;
     private String restId;
+    private String restName;
     private String inquiryTitle;
     private String inquiryContent;
     private String inquiryAnswer;

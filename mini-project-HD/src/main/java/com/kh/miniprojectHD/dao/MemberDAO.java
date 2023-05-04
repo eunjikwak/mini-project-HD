@@ -2,19 +2,17 @@ package com.kh.miniprojectHD.dao;
 
 import com.kh.miniprojectHD.common.Common;
 import com.kh.miniprojectHD.vo.MemberVO;
+import org.springframework.stereotype.Repository;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.ResultSet;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-
+@Repository
 public class MemberDAO {
     Connection conn = null;
     Statement stmt = null;
     ResultSet rs = null;
-
+    PreparedStatement pStmt = null;
     // 로그인 체크
     public boolean loginCheck(String id, String pwd) {
         try {
@@ -43,6 +41,8 @@ public class MemberDAO {
         }
         return false;
     }
+
+    //회원 조회
     public List<MemberVO> memberSelect(String id) {
         List<MemberVO> list = new ArrayList<>();
         try {
@@ -73,6 +73,32 @@ public class MemberDAO {
 
         }
         return list;
+    }
+
+    //회원 정보 변경하기(곽은지)
+    public Boolean memberUpdate(MemberVO vo) {
+        System.out.println(vo.getPwd());
+        String sql = "UPDATE MEMBER_INFO SET PASSWORD = ?,NAME = ?, NICKNAME= ?, EMAIL = ? , PHONE_NUM= ?, ADDRESS= ?, IMAGE_FILE_NAME= ? WHERE MEMBER_ID = ?";
+        try {
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+
+            pStmt.setString(1, vo.getPwd());
+            pStmt.setString(2, vo.getName());
+            pStmt.setString(3, vo.getNickName());
+            pStmt.setString(4, vo.getEMail());
+            pStmt.setString(5, vo.getPhoneNum());
+            pStmt.setString(6, vo.getAddr());
+            pStmt.setString(7, vo.getImgFileName());
+            pStmt.setString(8, vo.getMemId());
+            pStmt.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+    return false;
     }
 
 }

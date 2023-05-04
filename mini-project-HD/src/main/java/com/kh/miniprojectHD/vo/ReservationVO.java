@@ -13,6 +13,7 @@ public class ReservationVO {
     private int resvId;
     private String memId;
     private  String restId;
+    private String restName;
     private Date resvDate;
     private Date applicationDate;
     private Date confirmDate;
