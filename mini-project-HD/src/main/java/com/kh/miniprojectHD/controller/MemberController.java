@@ -41,4 +41,14 @@ public class MemberController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    // POST : 회원 탈퇴
+    @PostMapping("/del")
+    public ResponseEntity<Boolean> memberDelete(@RequestBody Map<String, String> delData) {
+        System.out.println("컨트롤러" + delData);
+        String getId = delData.get("id");
+        boolean isTrue = dao.memberDelete(getId);
+        return new ResponseEntity<>(isTrue, HttpStatus.OK);
+    }
+
+
 }

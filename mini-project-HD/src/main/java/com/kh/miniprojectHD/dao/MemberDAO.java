@@ -101,4 +101,25 @@ public class MemberDAO {
     return false;
     }
 
+    //회원탈퇴 (곽은지)
+    public Boolean memberDelete(String id) {
+        try {
+            String sql = "DELETE FROM MEMBER_INFO WHERE MEMBER_ID = ?";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1,id);
+            System.out.println(id);
+            pStmt.executeUpdate();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+        return false;
+
+    }
+
+
 }
