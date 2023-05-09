@@ -2,10 +2,13 @@ package com.kh.miniprojectHD.dao;
 
 import com.kh.miniprojectHD.common.Common;
 import com.kh.miniprojectHD.vo.ReservationVO;
+import com.kh.miniprojectHD.vo.RestJoinVO;
 import com.kh.miniprojectHD.vo.RestaurantVO;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Repository
 public class RestaurantDAO {
@@ -41,5 +44,35 @@ public class RestaurantDAO {
 
         }
         return vo;
+    }
+
+    // 매장 리스트 상단 고정 매장 정보
+    public List<RestJoinVO> rtSelect(RestaurantVO restaurantVO){
+        List<RestJoinVO> list = new ArrayList<>();
+        try{
+            String sql = "SELECT RESTAURANT_NAME,RESTAURANT_PHONE,RESTAURANT_ADDR,TRUNC(AVG(RATING),1) FROM RESTAURANT JOIN RESTAURANT_INFO ON RESTAURANT.RESTAURANT_ID = RESTAURANT_INFO.RESTAURANT_ID JOIN REVIEW ON RESTAURANT.RESTAURANT_ID = REVIEW.RESTAURANT_ID WHERE RESTAURANT.RESTAURANT_ID =? GROUP BY RESTAURANT_NAME,RESTAURANT_PHONE,RESTAURANT_ADDR";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, restaurantVO.getRestId());
+            rs = pStmt.executeQuery();
+            while (rs.next()){
+                String name = rs.getString("RESTAURANT_NAME");
+                String phone = rs.getString("RESTAURANT_PHONE");
+                String addr = rs.getString("RESTAURANT_ADDR");
+                double avgRating = rs.getDouble("TRUNC(AVG(RATING),1)");
+                RestJoinVO vo = new RestJoinVO();
+                vo.setName(name);
+                vo.setPhone(phone);
+                vo.setAddr(addr);
+                vo.setAvgRating(avgRating);
+                list.add(vo);
+            }
+            Common.close(rs);
+            Common.close(pStmt);
+            Common.close(conn);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
     }
 }

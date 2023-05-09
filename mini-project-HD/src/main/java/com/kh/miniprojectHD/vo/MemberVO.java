@@ -19,4 +19,8 @@ public class MemberVO {
     private String addr;
     private Date joinDate;
     private String imgFileName;
+
+    public MemberVO(){
+
+    }
 }

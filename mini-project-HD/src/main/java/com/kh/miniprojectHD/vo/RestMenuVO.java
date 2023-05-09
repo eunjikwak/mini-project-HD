@@ -13,4 +13,8 @@ public class RestMenuVO {
     private int menuPrice;
     private String menuDesc;
     private String menuImgFileName;
+
+    public RestMenuVO() {
+
+    }
 }

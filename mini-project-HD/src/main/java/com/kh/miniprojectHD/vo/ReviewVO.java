@@ -19,4 +19,8 @@ public class ReviewVO {
     private String reviewFileName;
     private Date reviewDate;
     private double rating;
+
+    public ReviewVO(){
+
+    }
 }

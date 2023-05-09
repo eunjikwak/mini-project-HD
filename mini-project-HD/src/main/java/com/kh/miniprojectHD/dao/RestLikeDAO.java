@@ -45,7 +45,45 @@ public class RestLikeDAO {
         }
         return list;
     }
+    // 찜 등록
+    public boolean addRestLike(String restId, String memId) {
+        int result = 0;
+        String sql = "INSERT INTO RESTAURANT_LIKE(RESTAURANT_ID,MEMBER_ID) VALUES(?,?)";
 
+        try {
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, restId);
+            pStmt.setString(2, memId);
+            result = pStmt.executeUpdate();
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+        if(result == 1) return true;
+        else return false;
+    }
+    // 찜 삭제
+    public boolean delRestLike(String restId,String memId) {
+        int result = 0;
+        String sql = "DELETE FROM RESTAURANT_LIKE WHERE RESTAURANT_ID = ? AND MEMBER_ID = ?";
+
+        try {
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, restId);
+            pStmt.setString(2, memId);
+
+            result = pStmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+        if(result == 1) return true;
+        else return false;
+    }
 
 }

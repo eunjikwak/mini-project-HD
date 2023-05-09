@@ -51,4 +51,28 @@ public class InquiryDAO {
         }
         return list;
     }
+    // 문의 등록
+    public boolean addInquiry(String restId, String memId, String title, String content) {
+        int result = 0;
+        String sql = "INSERT INTO INQUIRY(INQUIRY_ID,RESTAURANT_ID,MEMBER_ID,INQUIRY_TITLE,INQUIRY_CONTENT) VALUES(SEQ_INQUIRY_ID.NEXTVAL,?,?,?,?)";
+
+        try {
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, restId);
+            pStmt.setString(2, memId);
+            pStmt.setString(3, title);
+            pStmt.setString(4, content);
+            result = pStmt.executeUpdate();
+
+            System.out.println(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+        if(result == 1) return true;
+        else return false;
+    }
 }

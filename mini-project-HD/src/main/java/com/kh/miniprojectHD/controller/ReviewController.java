@@ -1,17 +1,18 @@
 package com.kh.miniprojectHD.controller;
 
+import com.kh.miniprojectHD.dao.RestaurantDAO;
 import com.kh.miniprojectHD.dao.ReviewDAO;
 import com.kh.miniprojectHD.vo.InquiryVO;
+import com.kh.miniprojectHD.vo.RestaurantVO;
+import com.kh.miniprojectHD.vo.ReviewJoinVO;
 import com.kh.miniprojectHD.vo.ReviewVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000" )
 @RestController
@@ -25,4 +26,26 @@ public class ReviewController {
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
+    // 매장 페이지 리뷰 정보 불러오기
+    @GetMapping("/restaurant/review")
+    public ResponseEntity<List<ReviewJoinVO>> restaurantReview(@RequestParam String restaurantId){
+        RestaurantVO vo = new RestaurantVO();
+        vo.setRestId(restaurantId);
+
+        List<ReviewJoinVO> list = dao.reviewSelect(vo);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    // 리뷰 추가
+    @PostMapping("/restaurant/add/review")
+    public ResponseEntity<Boolean> addReview(@RequestBody Map<String, String> reviewData) {
+        String getRestId = reviewData.get("restId");
+        String getMemberId = reviewData.get("memberId");
+        String getTitle = reviewData.get("title");
+        String getContent = reviewData.get("content");
+        Double getRating = Double.parseDouble(reviewData.get("rating"));
+
+        boolean list = dao.addReview(getRestId, getMemberId, getTitle, getContent, getRating);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
 }

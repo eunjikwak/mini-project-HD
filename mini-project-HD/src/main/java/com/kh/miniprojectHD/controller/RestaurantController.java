@@ -4,6 +4,7 @@ package com.kh.miniprojectHD.controller;
 import com.kh.miniprojectHD.dao.ReservationDAO;
 import com.kh.miniprojectHD.dao.RestaurantDAO;
 import com.kh.miniprojectHD.vo.ReservationVO;
+import com.kh.miniprojectHD.vo.RestJoinVO;
 import com.kh.miniprojectHD.vo.RestaurantVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -25,6 +26,17 @@ public class RestaurantController {
     public ResponseEntity<RestaurantVO> resvList (@RequestParam String name) {
         RestaurantVO vo = dao.restNameSelect(name);
         return new ResponseEntity<>(vo, HttpStatus.OK);
+    }
+
+    // 상단 고정 상세 정보
+    @GetMapping("/restaurant")
+    public ResponseEntity<List<RestJoinVO>> joinInfo (@RequestParam String restaurantId){
+
+        RestaurantVO vo = new RestaurantVO();
+        vo.setRestId(restaurantId);
+
+        List<RestJoinVO> list = dao.rtSelect(vo);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
 

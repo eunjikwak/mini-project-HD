@@ -16,4 +16,9 @@ public class RestaurantVO {
     private Date restDate;
     private int isAvailable;
     private String category;
+
+    public RestaurantVO(){
+
+    }
+
 }

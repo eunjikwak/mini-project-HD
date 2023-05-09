@@ -15,4 +15,8 @@ public class RestaurantInfoVO {
     private String restNotice;
     private String restHours;
     private String restIntro;
+
+    public RestaurantInfoVO(){
+
+    }
 }
