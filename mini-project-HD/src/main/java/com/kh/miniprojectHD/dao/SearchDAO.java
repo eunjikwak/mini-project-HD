@@ -16,11 +16,11 @@ import java.util.Map;
 @Repository
 
 public class SearchDAO {
-        private Connection conn = null;
-        private Statement stmt = null;
-        private ResultSet rs = null;
-        private PreparedStatement pStmt = null;
-        public List<RestListVO> filterRest(Map<String, String[]> region, String[] cat, String[] price, String rat){
+    private Connection conn = null;
+    private Statement stmt = null;
+    private ResultSet rs = null;
+    private PreparedStatement pStmt = null;
+    public List<RestListVO> filterRest(Map<String, String[]> region, String[] cat, String[] price, String rat){
         List<RestListVO> list = new ArrayList<>();
 
         String sql = "SELECT R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_CATEGORY , RESTAURANT_PHONE, RESTAURANT_ADDR, RESERVATION_POSSIBILITY ,TRUNC(AVG(RATING),1) AS RATING, COUNT(REVIEW_ID) AS REVIEWS" +
@@ -190,7 +190,7 @@ public class SearchDAO {
         return list;
     }
 
-        public List<RestListVO> searchRest(String[] kw){
+    public List<RestListVO> searchRest(String[] kw){
         List<RestListVO> list = new ArrayList<>();
         String sql = "SELECT R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_CATEGORY , RESTAURANT_PHONE, RESTAURANT_ADDR, RESERVATION_POSSIBILITY ,TRUNC(AVG(RATING),1) AS RATING, COUNT(REVIEW_ID) AS REVIEWS" +
                 " FROM RESTAURANT R JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID" +
@@ -251,7 +251,7 @@ public class SearchDAO {
         return list;
     }
 
-        public List<RestListVO> searchAndFilter(String[] kw, Map<String, String[]> region, String[] cat, String[] price, String rat){
+    public List<RestListVO> searchAndFilter(String[] kw, Map<String, String[]> region, String[] cat, String[] price, String rat){
         List<RestListVO> list = new ArrayList<>();
         String sql = "SELECT R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_CATEGORY , RESTAURANT_PHONE, RESTAURANT_ADDR, RESERVATION_POSSIBILITY ,TRUNC(AVG(RATING),1) AS RATINGS, COUNT(REVIEW_ID) AS REVIEWS" +
                 " FROM RESTAURANT R JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID" +
@@ -270,7 +270,7 @@ public class SearchDAO {
             }
         }
 
-        if(kw.length != 0 && (!region.isEmpty() || cat.length != 0 || price.length !=0)) sql = sql + " AND ";
+        if(kw != null && kw.length != 0 && (!region.isEmpty() || cat.length != 0 || price.length !=0)) sql = sql + " AND ";
 
         List<String> regList = new ArrayList<>(region.keySet());
 
@@ -345,7 +345,7 @@ public class SearchDAO {
         }
 
         // 앞 배열이 비어있지 않으면 or 붙이고 아니면 처음에 안 붙이고 카테고리 바뀔 때 AND 사용
-        if(cat.length != 0) {
+        if(cat != null && cat.length != 0) {
             if (region != null && !region.isEmpty()) {
                 sql = sql + " AND ";
                 for (int i = 0; i < cat.length; i++) {
@@ -366,7 +366,7 @@ public class SearchDAO {
             }
         }
 
-        if(price.length != 0) {
+        if(price != null && price.length != 0) {
             for (int i = 0; i < price.length; i++) {
                 if (price[i].equals("1만원대")) price[i] = "10000 <= RM.MENU_PRICE AND RM.MENU_PRICE < 20000";
                 else if (price[i].equals("2만원대")) price[i] = "20000 <= RM.MENU_PRICE AND RM.MENU_PRICE < 30000";
@@ -450,7 +450,7 @@ public class SearchDAO {
         return list;
     }
 
-        public List<RestListVO> popularList(){
+    public List<RestListVO> popularList(){
         List<RestListVO> list = new ArrayList<>();
 
         String sql = "SELECT R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_CATEGORY , RESTAURANT_PHONE,  RESTAURANT_ADDR, RESERVATION_POSSIBILITY ,TRUNC(AVG(RATING),1) AS RATINGS ,COUNT(REVIEW_ID) AS REVIEWS " +
@@ -502,7 +502,7 @@ public class SearchDAO {
         return list;
     }
 
-        public List<RestListVO> weeklyTop3Rest(){
+    public List<RestListVO> weeklyTop3Rest(){
         List<RestListVO> list = new ArrayList<>();
 
         String sql = "SELECT * FROM (" +
@@ -561,7 +561,7 @@ public class SearchDAO {
 
     }
 
-        public List<ReviewVO> weeklyTop3Review(){
+    public List<ReviewVO> weeklyTop3Review(){
         List<ReviewVO> list = new ArrayList<>();
         String sql = "SELECT * FROM ( SELECT R.REVIEW_ID, R2.RESTAURANT_NAME, R.REVIEW_TITLE , R.REVIEW_CONTENT , R.RATING , COUNT(rl.MEMBER_ID) FROM REVIEW R LEFT JOIN REVIEW_LIKE RL ON r.REVIEW_ID = rl.REVIEW_ID JOIN RESTAURANT r2 ON R.RESTAURANT_ID = R2.RESTAURANT_ID GROUP BY  R.REVIEW_ID, R2.RESTAURANT_NAME, R.REVIEW_TITLE , R.REVIEW_CONTENT , R.RATING ORDER BY R.RATING DESC) WHERE ROWNUM <= 3";
 
@@ -647,4 +647,4 @@ public class SearchDAO {
 //    }
 
 
-    }
+}
