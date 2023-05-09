@@ -517,7 +517,7 @@ public class SearchDAO {
                 "    JOIN R_MENU RM ON RI.RESTAURANT_ID = RM.RESTAURANT_ID" +
                 "  )" +
                 "  GROUP BY R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_ADDR, RESTAURANT_CATEGORY, RESERVATION_POSSIBILITY, RESTAURANT_PHONE" +
-                "  HAVING TRUNC(AVG(RATING),1) >= 4.0" +
+                "  HAVING TRUNC(AVG(RATING),1) >= 3.0" +
                 "  ORDER BY RATINGS DESC" +
                 ") WHERE ROWNUM <= 6";
 
