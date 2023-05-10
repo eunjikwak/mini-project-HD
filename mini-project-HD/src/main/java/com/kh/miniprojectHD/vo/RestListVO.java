@@ -1,4 +1,5 @@
 package com.kh.miniprojectHD.vo;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 

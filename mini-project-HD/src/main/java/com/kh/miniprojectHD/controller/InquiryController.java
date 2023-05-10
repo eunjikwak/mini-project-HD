@@ -35,6 +35,13 @@ public class InquiryController {
         boolean list = dao.addInquiry(getRestId, getMemberId, getTitle, getContent);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
+    @GetMapping("/business/inquiry")
+    public ResponseEntity<List<InquiryVO>> businessInquiryList (@RequestParam String id) {
+        List<InquiryVO> list = dao.businessInquiry(id);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+
 
 
 }

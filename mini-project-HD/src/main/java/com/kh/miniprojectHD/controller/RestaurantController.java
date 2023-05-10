@@ -34,9 +34,16 @@ public class RestaurantController {
 
         RestaurantVO vo = new RestaurantVO();
         vo.setRestId(restaurantId);
-
         List<RestJoinVO> list = dao.rtSelect(vo);
         return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+
+    //레스토랑 정보 조회
+    @GetMapping("/restaurant/select")
+    public ResponseEntity<RestaurantVO> restSelect (@RequestParam String name) {
+        RestaurantVO vo = dao.restSelect(name);
+        return new ResponseEntity<>(vo, HttpStatus.OK);
     }
 
 

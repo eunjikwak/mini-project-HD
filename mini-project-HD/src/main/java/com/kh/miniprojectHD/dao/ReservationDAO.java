@@ -1,9 +1,14 @@
 package com.kh.miniprojectHD.dao;
 
 import com.kh.miniprojectHD.common.Common;
+import com.kh.miniprojectHD.vo.InquiryVO;
 import com.kh.miniprojectHD.vo.MemberVO;
 import com.kh.miniprojectHD.vo.ReservationVO;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -77,5 +82,39 @@ public class ReservationDAO {
         if(result == 1) return true;
         else return false;
     }
+    //사업자 예약조회
+    public List<ReservationVO> businessResvSelect(String id) {
+        List<ReservationVO> list = new ArrayList<>();
+        try {
+            conn = Common.getConnection(); //연결
+            stmt = conn.createStatement(); //정적인 sql 사용
+            System.out.println(id);
+            String sql = "SELECT *FROM RESERVATION WHERE RESTAURANT_ID = '" + id + "'";
+            rs = stmt.executeQuery(sql); //
+            while(rs.next()){ //읽을 행이 있으면 참
+                int resvId = rs.getInt("RESERVATION_ID");
+                String memId = rs.getString("MEMBER_ID");
+                String restId = rs.getString("RESTAURANT_ID");
+                Date resvDate = rs.getDate("RESERVATION_DATE");
+                Date applicationDate = rs.getDate("APPLICATION_DATE");
+                Date confirmDate = rs.getDate("CONFIRM_DATE");
+                String resvRequest = rs.getString("RESERVATION_REQUEST");
+                int resvSeat = rs.getInt("RESERVATION_SEAT");
+                int resvPeople = rs.getInt("RESERVATION_PEOPLE");
+                String resvStat = rs.getString("RESERVATION_CONDITION");
+                ReservationVO vo = new ReservationVO(resvId,memId,restId,null,resvDate,applicationDate,confirmDate,resvRequest,resvSeat,resvPeople,resvStat);
+                list.add(vo);
+
+            }
+            Common.close(rs); // 연결과 역순으로 해제
+            Common.close(stmt);
+            Common.close(conn);
+        }catch(Exception e){
+            e.printStackTrace();
+
+        }
+        return list;
+    }
+
 }
 

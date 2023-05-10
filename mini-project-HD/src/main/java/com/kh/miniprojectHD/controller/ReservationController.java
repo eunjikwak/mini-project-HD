@@ -40,4 +40,11 @@ public class ReservationController {
         boolean list = dao.addRes(getRestId,getMemberId,getResDate,getResReq,getResSeat,getResPeo);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
+
+    //사업자 예약 조회
+    @GetMapping("/business/resv")
+    public ResponseEntity<List<ReservationVO>> businessResvList (@RequestParam String id) {
+        List<ReservationVO> list = dao.businessResvSelect(id);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
 }

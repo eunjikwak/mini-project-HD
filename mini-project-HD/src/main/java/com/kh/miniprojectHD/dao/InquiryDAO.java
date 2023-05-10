@@ -75,4 +75,39 @@ public class InquiryDAO {
         if(result == 1) return true;
         else return false;
     }
+
+    //사업자 ID로 문의조회
+
+    public List<InquiryVO> businessInquiry(String id)  {
+        List<InquiryVO> list = new ArrayList<>();
+        try {
+            conn = Common.getConnection(); //연결
+            stmt = conn.createStatement(); //정적인 sql 사용
+            String sql = " SELECT * FROM INQUIRY WHERE RESTAURANT_ID = "+ "'" + id + "'";
+
+            rs = stmt.executeQuery(sql); //
+            while(rs.next()){ //읽을 행이 있으면 참
+                int inquiryId = rs.getInt("INQUIRY_ID");
+                String memId = rs.getString("MEMBER_ID");
+                String restId = rs.getString("RESTAURANT_ID");
+
+                String inquiryTitle = rs.getString("INQUIRY_TITLE");
+                String inquiryContent = rs.getString("INQUIRY_CONTENT");
+                String inquiryAnswer = rs.getString("INQUIRY_ANSWER");
+                Date inquiryDate = rs.getDate("INQUIRY_DATE");
+                String inquiryImgFileName = rs.getString("INQUIRY_IMAGE_FILE_NAME");
+                String inquiryStat = rs.getString("INQUIRY_CONDITION");
+                InquiryVO vo = new InquiryVO(inquiryId,memId,restId,null,inquiryTitle,inquiryContent,inquiryAnswer,inquiryDate,inquiryImgFileName,inquiryStat); //하나의 행(레코드)에 대한 정보저장을 위한 객체생성
+                list.add(vo);
+
+            }
+            Common.close(rs); // 연결과 역순으로 해제
+            Common.close(stmt);
+            Common.close(conn);
+        }catch(Exception e){
+            e.printStackTrace();
+
+        }
+        return list;
+    }
 }
