@@ -32,7 +32,7 @@ public class ReservationController {
     public ResponseEntity<Boolean> addRes(@RequestBody Map<String, String> resData){
         String getRestId = resData.get("restId");
         String getMemberId = resData.get("memberId");
-        Date getResDate = Date.valueOf(resData.get("resDate"));
+        String getResDate = resData.get("resDate");
         String getResReq = resData.get("resReq");
         int getResSeat = Integer.parseInt(resData.get("resSeat"));
         int getResPeo = Integer.parseInt(resData.get("resPeo"));

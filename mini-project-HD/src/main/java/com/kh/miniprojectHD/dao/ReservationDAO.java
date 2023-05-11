@@ -58,16 +58,16 @@ public class ReservationDAO {
         return list;
     }
     // 예약 추가
-    public boolean addRes(String restId,String memId,Date resDate,String resReq,int resSeat,int resPeo) {
+    public boolean addRes(String restId,String memId,String resDate,String resReq,int resSeat,int resPeo) {
         int result = 0;
-        String sql = "INSERT INTO RESERVATION(RESERVATION_ID,RESTAURANT_ID,MEMBER_ID,RESERVATION_DATE,RESERVATION_REQUEST,RESERVATION_SEAT,RESERVATION_PEOPLE) VALUES(SEQ_RES_ID.NEXTVAL,?,?,?,?,?,?)";
+        String sql = "INSERT INTO RESERVATION(RESERVATION_ID,RESTAURANT_ID,MEMBER_ID,RESERVATION_DATE,RESERVATION_REQUEST,RESERVATION_SEAT,RESERVATION_PEOPLE) VALUES(SEQ_RES_ID.NEXTVAL,?,?,TO_DATE(?,'YYYY-MM-DD HH24:MI:SS'),?,?,?)";
 
         try {
             conn = Common.getConnection();
             pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, restId);
             pStmt.setString(2, memId);
-            pStmt.setDate(3, resDate);
+            pStmt.setString(3, resDate);
             pStmt.setString(4, resReq);
             pStmt.setInt(5, resSeat);
             pStmt.setInt(6, resPeo);

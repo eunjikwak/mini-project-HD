@@ -48,4 +48,13 @@ public class ReviewController {
         boolean list = dao.addReview(getRestId, getMemberId, getTitle, getContent, getRating);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
+    // 리뷰 상세 정보
+    @GetMapping("/review/detail")
+    public ResponseEntity<List<ReviewJoinVO>> reviewDetail(@RequestParam int reviewId) {
+        ReviewVO vo = new ReviewVO();
+        vo.setReviewId(reviewId);
+
+        List<ReviewJoinVO> list = dao.detailSelect(vo);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
 }
