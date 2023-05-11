@@ -5,16 +5,15 @@ import com.kh.miniprojectHD.dao.ReservationDAO;
 import com.kh.miniprojectHD.dao.RestaurantDAO;
 import com.kh.miniprojectHD.vo.ReservationVO;
 import com.kh.miniprojectHD.vo.RestJoinVO;
+import com.kh.miniprojectHD.vo.RestaurantInfoVO;
 import com.kh.miniprojectHD.vo.RestaurantVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @CrossOrigin(origins = "http://localhost:3000" )
 @RestController
@@ -46,6 +45,13 @@ public class RestaurantController {
         return new ResponseEntity<>(vo, HttpStatus.OK);
     }
 
+    // POST : 매장 상세정보 업데이트(곽은지)
+    @PostMapping("/business/restaurant/update")
+    public ResponseEntity<Boolean> memberUpdate(@RequestBody Map<String, RestaurantVO> data) {
+        RestaurantVO vo = data.get("vo");
+        boolean result = dao.restUpdate(vo);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
 
 }

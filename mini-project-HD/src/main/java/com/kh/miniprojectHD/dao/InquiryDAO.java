@@ -83,7 +83,7 @@ public class InquiryDAO {
         try {
             conn = Common.getConnection(); //연결
             stmt = conn.createStatement(); //정적인 sql 사용
-            String sql = " SELECT * FROM INQUIRY WHERE RESTAURANT_ID = "+ "'" + id + "'";
+            String sql = " SELECT * FROM INQUIRY WHERE RESTAURANT_ID = "+ "'" + id + "' ORDER BY INQUIRY_DATE , INQUIRY_ID ";
 
             rs = stmt.executeQuery(sql); //
             while(rs.next()){ //읽을 행이 있으면 참

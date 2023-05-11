@@ -1,6 +1,7 @@
 package com.kh.miniprojectHD.dao;
 
 import com.kh.miniprojectHD.common.Common;
+import com.kh.miniprojectHD.vo.MemberVO;
 import com.kh.miniprojectHD.vo.RestaurantInfoVO;
 import com.kh.miniprojectHD.vo.RestaurantVO;
 import org.springframework.stereotype.Repository;
@@ -77,4 +78,29 @@ public class RestaurantInfoDAO {
         }
         return vo;
     }
+
+    //매장 상세정보 업데이트
+
+    public Boolean restInfoUpdate(RestaurantInfoVO vo) {
+        String sql = " UPDATE RESTAURANT_INFO SET  RESTAURANT_IMAGE_FILE_NAME=?, RESTAURANT_PHONE=?, RESTAURANT_ADDR=?, RESTAURANT_NOTICE=?,RESTAURANT_HOURS=?,RESTAURANT_INTRODUCE=? WHERE RESTAURANT_ID =?";
+        try {
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, vo.getRestImgFileName());
+            pStmt.setString(2, vo.getRestPhoneNum());
+            pStmt.setString(3, vo.getRestAddr());
+            pStmt.setString(4, vo.getRestNotice());
+            pStmt.setString(5, vo.getRestHours());
+            pStmt.setString(6, vo.getRestIntro());
+            pStmt.setString(7, vo.getRestId());
+            pStmt.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+        return false;
+    }
+
 }

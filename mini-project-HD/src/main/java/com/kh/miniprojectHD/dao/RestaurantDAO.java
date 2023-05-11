@@ -3,6 +3,7 @@ package com.kh.miniprojectHD.dao;
 import com.kh.miniprojectHD.common.Common;
 import com.kh.miniprojectHD.vo.ReservationVO;
 import com.kh.miniprojectHD.vo.RestJoinVO;
+import com.kh.miniprojectHD.vo.RestaurantInfoVO;
 import com.kh.miniprojectHD.vo.RestaurantVO;
 import org.springframework.stereotype.Repository;
 
@@ -101,5 +102,26 @@ public class RestaurantDAO {
 
         }
         return vo;
+    }
+
+    //매장 정보 업데이트
+    public Boolean restUpdate(RestaurantVO vo) {
+        String sql = " UPDATE RESTAURANT SET RESTAURANT_ID=?, RESTAURANT_NAME=?,RESERVATION_POSSIBILITY=?,RESTAURANT_CATEGORY=? WHERE MEMBER_ID=?";
+        try {
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, vo.getRestId());
+            pStmt.setString(2, vo.getRestName());
+            pStmt.setInt(3, vo.getIsAvailable());
+            pStmt.setString(4, vo.getCategory());
+            pStmt.setString(5, vo.getMemId());
+            pStmt.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+        return false;
     }
 }
