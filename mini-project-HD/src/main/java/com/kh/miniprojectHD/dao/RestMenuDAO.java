@@ -47,7 +47,7 @@ public class RestMenuDAO {
         }
         return list;
     }
-    // 메뉴 정보 불러오기
+    // 메뉴 정보 불러오기2
     public List<RestMenuVO> bizMenuSelect(String restId){
         List<RestMenuVO> list = new ArrayList<>();
 
@@ -107,12 +107,39 @@ public class RestMenuDAO {
     //메뉴삭제
     public Boolean menuDelete(int id) {
         try {
-            String sql = "DELETE FROM MEMBER_INFO WHERE MENU_ID = ?";
+            String sql = "DELETE FROM R_MENU WHERE MENU_ID = ?";
             conn = Common.getConnection();
             pStmt = conn.prepareStatement(sql);
             pStmt.setInt(1,id);
             System.out.println(id);
             pStmt.executeUpdate();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+        return false;
+
+    }
+
+    //메뉴수정
+    public Boolean menuUpdate(RestMenuVO[] vo) {
+        try {
+            String sql = "UPDATE R_MENU SET RESTAURANT_ID=?, MENU_NAME=?, MENU_PRICE=?, MENU_DESC=?, MENU_IMAGE_FILE_NAME=? WHERE MENU_ID = ?";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+
+            for (RestMenuVO menu : vo) {
+                pStmt.setString(1,menu.getRestId());
+                pStmt.setString(2,menu.getMenuName());
+                pStmt.setInt(3,menu.getMenuPrice());
+                pStmt.setString(4,menu.getMenuDesc());
+                pStmt.setString(5,menu.getMenuImgFileName());
+                pStmt.setInt(6,menu.getMenuId());
+                pStmt.executeUpdate();
+            }
             return true;
 
         } catch (Exception e) {

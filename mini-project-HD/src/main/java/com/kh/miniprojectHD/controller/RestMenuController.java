@@ -59,4 +59,13 @@ public class RestMenuController {
         boolean list = dao.menuDelete(menuId);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
+
+    //메뉴 수정
+    @PostMapping("/business/restaurant/menu/update")
+    public ResponseEntity<Boolean> updateMenu(@RequestBody Map<String, RestMenuVO[]> menuData) {
+        RestMenuVO[] menuList = menuData.get("vo");
+        RestMenuDAO dao = new RestMenuDAO();
+        boolean list = dao.menuUpdate(menuList);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
 }
