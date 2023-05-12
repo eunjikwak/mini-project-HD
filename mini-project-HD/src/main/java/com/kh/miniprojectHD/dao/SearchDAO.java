@@ -56,10 +56,10 @@ public class SearchDAO {
                             if(state.equals("세종")){
                                 if (regList.size() == 1) {
                                     if (reg.length != 1) {
-                                        if (j == 0) sql = sql + " (RESTAURANT_ADDR LIKE '%" + state + "%'";
+                                        if (j == 0) sql = sql + " ((RESTAURANT_ADDR LIKE '%" + state + "%')";
                                         else if (j == reg.length - 1)
-                                            sql = sql + " OR RESTAURANT_ADDR LIKE '%" + state + "%')";
-                                        else sql = sql + " OR RESTAURANT_ADDR LIKE '%" + state + "%'";
+                                            sql = sql + " OR (RESTAURANT_ADDR LIKE '%" + state + "%'))";
+                                        else sql = sql + " OR (RESTAURANT_ADDR LIKE '%" + state + "%')";
                                     } else sql = sql + " (RESTAURANT_ADDR LIKE '%" + state + "%')";
                                 } else if (regList.size() != 1) {
                                     int index = regList.indexOf(state);
