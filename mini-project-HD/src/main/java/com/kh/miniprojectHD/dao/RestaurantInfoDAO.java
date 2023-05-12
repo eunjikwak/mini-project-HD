@@ -20,7 +20,7 @@ public class RestaurantInfoDAO {
     public List<RestaurantInfoVO> infoSelect(RestaurantVO restaurantVO){
         List<RestaurantInfoVO> list = new ArrayList<>();
         try{
-            String sql = "SELECT RESTAURANT_NOTICE,RESTAURANT_PHONE,RESTAURANT_INTRODUCE,RESTAURANT_HOURS,RESTAURANT_ADDR FROM RESTAURANT_INFO WHERE RESTAURANT_ID = ?";
+            String sql = "SELECT RESTAURANT_ID,RESTAURANT_NOTICE,RESTAURANT_PHONE,RESTAURANT_INTRODUCE,RESTAURANT_HOURS,RESTAURANT_ADDR FROM RESTAURANT_INFO WHERE RESTAURANT_ID = ?";
             conn = Common.getConnection();
             pStmt = conn.prepareStatement(sql);
             pStmt.setString(1,restaurantVO.getRestId());
@@ -31,13 +31,14 @@ public class RestaurantInfoDAO {
                 String introduce = rs.getString("RESTAURANT_INTRODUCE");
                 String hours = rs.getString("RESTAURANT_HOURS");
                 String addr = rs.getString("RESTAURANT_ADDR");
-
+                String restId = rs.getString("RESTAURANT_ID");
                 RestaurantInfoVO vo = new RestaurantInfoVO();
                 vo.setRestNotice(notice);
                 vo.setRestPhoneNum(phone);
                 vo.setRestIntro(introduce);
                 vo.setRestHours(hours);
                 vo.setRestAddr(addr);
+                vo.setRestId(restId);
                 list.add(vo);
             }
             Common.close(rs);

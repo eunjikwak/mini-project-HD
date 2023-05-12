@@ -22,7 +22,7 @@ public class RestMenuDAO {
         List<RestMenuVO> list = new ArrayList<>();
 
         try{
-            String sql ="SELECT MENU_NAME, MENU_PRICE, MENU_DESC FROM R_MENU WHERE RESTAURANT_ID = ?";
+            String sql ="SELECT MENU_NAME, MENU_PRICE, MENU_DESC,MENU_ID FROM R_MENU WHERE RESTAURANT_ID = ?";
             conn = Common.getConnection();
             pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, restaurantVO.getRestId());
@@ -32,10 +32,13 @@ public class RestMenuDAO {
                 String name = rs.getString("MENU_NAME");
                 int price = rs.getInt("MENU_PRICE");
                 String desc = rs.getString("MENU_DESC");
+                int menuId = rs.getInt("MENU_ID");
                 RestMenuVO vo = new RestMenuVO();
                 vo.setMenuName(name);
                 vo.setMenuPrice(price);
                 vo.setMenuDesc(desc);
+                vo.setMenuId(menuId);
+
                 list.add(vo);
             }
             Common.close(rs);
