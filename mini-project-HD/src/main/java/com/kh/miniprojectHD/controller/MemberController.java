@@ -56,7 +56,7 @@ public class MemberController {
     public ResponseEntity<Boolean> memberInsert(@RequestBody memberInfo mem){
         System.out.println("회원가입 컨트롤러 작동");
 //        boolean isTrue = dao.memberInsert(mem.getId(), mem.getPwd(), mem.getName(), mem.getEmail(), mem.getPhone(), mem.getNickname());
-        boolean isTrue = dao.memberInsert(mem.id, mem.pwd, mem.name, mem.email, mem.phone, mem.nickname);
+        boolean isTrue = dao.memberInsert(mem.id, mem.pwd, mem.name, mem.email, mem.phone, mem.nickname, mem.address);
 
         return new ResponseEntity<>(isTrue, HttpStatus.OK);
     }
@@ -99,6 +99,7 @@ public class MemberController {
         private String email;
         private String phone;
         private String nickname;
+        private String address;
     }
 
 

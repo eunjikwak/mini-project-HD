@@ -122,9 +122,9 @@ public class MemberDAO {
     }
 
     //회원가입(박준하)
-    public boolean memberInsert(String id, String pwd, String name, String email, String phone, String nickname){
+    public boolean memberInsert(String id, String pwd, String name, String email, String phone, String nickname, String address){
         int result = 0;
-        String sql = "INSERT INTO MEMBER_INFO(MEMBER_ID, PASSWORD, NAME, EMAIL, PHONE_NUM, NICKNAME) VALUES(?,?,?,?,?,?)";
+        String sql = "INSERT INTO MEMBER_INFO(MEMBER_ID, PASSWORD, NAME, EMAIL, PHONE_NUM, NICKNAME, ADDRESS) VALUES(?,?,?,?,?,?,?)";
 
         try {
             conn = Common.getConnection();
@@ -136,6 +136,7 @@ public class MemberDAO {
             pStmt.setString(4, email);
             pStmt.setString(5, phone);
             pStmt.setString(6, nickname);
+            pStmt.setString(7, address);
 
             result = pStmt.executeUpdate();
         } catch(Exception e){
