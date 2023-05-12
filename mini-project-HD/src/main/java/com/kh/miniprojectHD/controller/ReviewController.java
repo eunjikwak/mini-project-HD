@@ -44,8 +44,9 @@ public class ReviewController {
         String getTitle = reviewData.get("title");
         String getContent = reviewData.get("content");
         Double getRating = Double.parseDouble(reviewData.get("rating"));
+        String getImage = reviewData.get("image");
 
-        boolean list = dao.addReview(getRestId, getMemberId, getTitle, getContent, getRating);
+        boolean list = dao.addReview(getRestId, getMemberId, getTitle, getContent, getRating,getImage);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
     // 리뷰 상세 정보

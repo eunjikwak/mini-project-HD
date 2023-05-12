@@ -20,10 +20,9 @@ import java.util.Map;
 public class RestaurantInfoController {
     @Autowired
     private RestaurantInfoDAO dao; //autowired로 의존성 주입
-
+// 매장 상세 정보 불러오기
     @GetMapping("/restaurant/info")
     public ResponseEntity<List<RestaurantInfoVO>> restaurantInfo(@RequestParam String restaurantId){
-        RestaurantInfoDAO dao = new RestaurantInfoDAO();
         RestaurantVO vo = new RestaurantVO();
         vo.setRestId(restaurantId);
 

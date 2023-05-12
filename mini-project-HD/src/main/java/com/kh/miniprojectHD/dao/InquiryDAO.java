@@ -52,9 +52,9 @@ public class InquiryDAO {
         return list;
     }
     // 문의 등록
-    public boolean addInquiry(String restId, String memId, String title, String content) {
+    public boolean addInquiry(String restId, String memId, String title, String content,String image) {
         int result = 0;
-        String sql = "INSERT INTO INQUIRY(INQUIRY_ID,RESTAURANT_ID,MEMBER_ID,INQUIRY_TITLE,INQUIRY_CONTENT) VALUES(SEQ_INQUIRY_ID.NEXTVAL,?,?,?,?)";
+        String sql = "INSERT INTO INQUIRY(INQUIRY_ID,RESTAURANT_ID,MEMBER_ID,INQUIRY_TITLE,INQUIRY_CONTENT,INQUIRY_IMAGE_FILE_NAME) VALUES(SEQ_INQUIRY_ID.NEXTVAL,?,?,?,?,?)";
 
         try {
             conn = Common.getConnection();
@@ -63,6 +63,8 @@ public class InquiryDAO {
             pStmt.setString(2, memId);
             pStmt.setString(3, title);
             pStmt.setString(4, content);
+            pStmt.setString(5, image);
+
             result = pStmt.executeUpdate();
 
             System.out.println(result);

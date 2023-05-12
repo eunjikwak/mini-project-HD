@@ -31,8 +31,9 @@ public class InquiryController {
         String getMemberId = inquiryData.get("memberId");
         String getTitle = inquiryData.get("title");
         String getContent = inquiryData.get("content");
+        String getImage = inquiryData.get("image");
 
-        boolean list = dao.addInquiry(getRestId, getMemberId, getTitle, getContent);
+        boolean list = dao.addInquiry(getRestId, getMemberId, getTitle, getContent,getImage);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
     @GetMapping("/business/inquiry")

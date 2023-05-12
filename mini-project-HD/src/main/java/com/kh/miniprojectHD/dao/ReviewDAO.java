@@ -59,7 +59,7 @@ public class ReviewDAO {
         List<ReviewJoinVO> list = new ArrayList<>();
 
         try{
-            String sql ="SELECT M.NICKNAME,R.REVIEW_ID,R.REVIEW_TITLE,R.REVIEW_CONTENT,R.RATING,R.REVIEW_DATE,COUNT(L.REVIEW_ID) FROM REVIEW R JOIN MEMBER_INFO M ON R.MEMBER_ID = M.MEMBER_ID LEFT JOIN REVIEW_LIKE L ON R.REVIEW_ID = L.REVIEW_ID WHERE R.RESTAURANT_ID = ? GROUP BY M.NICKNAME, R.REVIEW_ID, R.REVIEW_TITLE, R.REVIEW_CONTENT, R.RATING, R.REVIEW_DATE";
+            String sql ="SELECT M.NICKNAME,R.REVIEW_ID,R.REVIEW_TITLE,R.REVIEW_CONTENT,R.RATING,R.REVIEW_DATE,COUNT(L.REVIEW_ID),REVIEW_IMAGE_FILE_NAME FROM REVIEW R JOIN MEMBER_INFO M ON R.MEMBER_ID = M.MEMBER_ID LEFT JOIN REVIEW_LIKE L ON R.REVIEW_ID = L.REVIEW_ID WHERE R.RESTAURANT_ID = ? GROUP BY M.NICKNAME, R.REVIEW_ID, R.REVIEW_TITLE, R.REVIEW_CONTENT, R.RATING, R.REVIEW_DATE,REVIEW_IMAGE_FILE_NAME";
             conn = Common.getConnection();
             pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, restaurantVO.getRestId());
@@ -72,6 +72,7 @@ public class ReviewDAO {
                 double reviewRating = rs.getDouble("RATING");
                 Date reviewDate = rs.getDate("REVIEW_DATE");
                 int likeCnt = rs.getInt("COUNT(L.REVIEW_ID)");
+                String image = rs.getString("REVIEW_IMAGE_FILE_NAME");
 
                 ReviewJoinVO vo = new ReviewJoinVO();
                 vo.setNickName(nickName);
@@ -81,6 +82,7 @@ public class ReviewDAO {
                 vo.setReviewRating(reviewRating);
                 vo.setReviewDate(reviewDate);
                 vo.setLikeCnt(likeCnt);
+                vo.setReviewImage(image);
                 list.add(vo);
             }
             Common.close(rs);
@@ -94,9 +96,9 @@ public class ReviewDAO {
     }
 
     // 리뷰 추가
-    public boolean addReview(String restId, String memId, String title, String content, double rating) {
+    public boolean addReview(String restId, String memId, String title, String content, double rating,String image) {
         int result = 0;
-        String sql = "INSERT INTO REVIEW(REVIEW_ID,RESTAURANT_ID,MEMBER_ID,REVIEW_TITLE,REVIEW_CONTENT,RATING,REVIEW_DATE) VALUES(SEQ_REVIEW_ID.NEXTVAL,?,?,?,?,?,SYSDATE)";
+        String sql = "INSERT INTO REVIEW(REVIEW_ID,RESTAURANT_ID,MEMBER_ID,REVIEW_TITLE,REVIEW_CONTENT,RATING,REVIEW_IMAGE_FILE_NAME) VALUES(SEQ_REVIEW_ID.NEXTVAL,?,?,?,?,?,?)";
 
         try {
             conn = Common.getConnection();
@@ -106,6 +108,8 @@ public class ReviewDAO {
             pStmt.setString(3, title);
             pStmt.setString(4, content);
             pStmt.setDouble(5, rating);
+            pStmt.setString(6, image);
+
             result = pStmt.executeUpdate();
 
             System.out.println(result);

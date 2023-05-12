@@ -16,7 +16,7 @@ public class RestaurantInfoDAO {
     private ResultSet rs = null;
     private PreparedStatement pStmt = null;
 
-    // 매장 상세 정보 불러오기
+    // 매장리스트 상세 정보 불러오기
     public List<RestaurantInfoVO> infoSelect(RestaurantVO restaurantVO){
         List<RestaurantInfoVO> list = new ArrayList<>();
         try{
