@@ -127,7 +127,7 @@ public class ReviewDAO {
         List<ReviewJoinVO> list = new ArrayList<>();
 
         try{
-            String sql ="SELECT NICKNAME,REVIEW_ID,REVIEW_TITLE,REVIEW_CONTENT,RATING,REVIEW_DATE FROM REVIEW JOIN MEMBER_INFO ON REVIEW.MEMBER_ID = MEMBER_INFO.MEMBER_ID WHERE REVIEW_ID = ?";
+            String sql ="SELECT M.NICKNAME,R.REVIEW_ID,R.REVIEW_TITLE,R.REVIEW_CONTENT,R.RATING,R.REVIEW_DATE,COUNT(L.REVIEW_ID),REVIEW_IMAGE_FILE_NAME FROM REVIEW R JOIN MEMBER_INFO M ON R.MEMBER_ID = M.MEMBER_ID LEFT JOIN REVIEW_LIKE L ON R.REVIEW_ID = L.REVIEW_ID WHERE R.REVIEW_ID = ? GROUP BY M.NICKNAME, R.REVIEW_ID, R.REVIEW_TITLE, R.REVIEW_CONTENT, R.RATING, R.REVIEW_DATE,REVIEW_IMAGE_FILE_NAME";
             conn = Common.getConnection();
             pStmt = conn.prepareStatement(sql);
             pStmt.setInt(1, reviewVO.getReviewId());
@@ -139,6 +139,8 @@ public class ReviewDAO {
                 String content = rs.getString("REVIEW_CONTENT");
                 double reviewRating = rs.getDouble("RATING");
                 Date reviewDate = rs.getDate("REVIEW_DATE");
+                int likeCnt = rs.getInt("COUNT(L.REVIEW_ID)");
+                String image = rs.getString("REVIEW_IMAGE_FILE_NAME");
 
                 ReviewJoinVO vo = new ReviewJoinVO();
                 vo.setNickName(nickName);
@@ -147,6 +149,8 @@ public class ReviewDAO {
                 vo.setReviewContent(content);
                 vo.setReviewRating(reviewRating);
                 vo.setReviewDate(reviewDate);
+                vo.setReviewRating(likeCnt);
+                vo.setReviewImage(image);
                 list.add(vo);
             }
             Common.close(rs);
