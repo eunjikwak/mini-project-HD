@@ -246,5 +246,97 @@ public class MemberDAO {
         else return false;
     }
 
+    //멤버 삭제를 위해 리뷰 먼저 삭제
+    public void memberReviewDelete(String id){
+        System.out.println("회원 리뷰내역 삭제");
+        try {
+            String sql = "DELETE FROM REVIEW WHERE MEMBER_ID = ?";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1,id);
+            System.out.println(id);
+            pStmt.executeUpdate();
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+    }
+
+    //멤버 삭제를 위해 리뷰-좋아요 삭제
+    public void memberReviewLikeDelete(String id){
+        System.out.println("회원 리뷰_좋아요 내역 삭제");
+        
+        try {
+            String sql = "DELETE FROM REVIEW_LIKE WHERE MEMBER_ID = ?";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1,id);
+            System.out.println(id);
+            pStmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+    }
+
+    //멤버 삭제를 위해 문의 먼저 삭제
+    public void memberInquiryDelete(String id){
+        System.out.println("회원 문의내역 삭제");
+        
+        try {
+            String sql = "DELETE FROM INQUIRY WHERE MEMBER_ID = ?";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1,id);
+            System.out.println(id);
+            pStmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+    }
+    
+    //멤버 삭제를 위해 레스토랑 좋아요 삭제
+    public void memberRestaurantLikeDelete(String id){
+        System.out.println("회원 매장 찜 내역 삭제");
+        
+        try {
+            String sql = "DELETE FROM RESTAURANT_LIKE WHERE MEMBER_ID = ?";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1,id);
+            System.out.println(id);
+            pStmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+    }
+    
+    //멤버 삭제를 위해 예약내역 삭제
+
+    public void memberReservationDelete(String id){
+        System.out.println("회원 예약내역 삭제");
+        try {
+            String sql = "DELETE FROM RESERVATION WHERE MEMBER_ID = ?";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1,id);
+            System.out.println(id);
+            pStmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+    }
 }
