@@ -46,11 +46,19 @@ public class MemberController {
     // POST : 회원 탈퇴
     @PostMapping("/del")
     public ResponseEntity<Boolean> memberDelete(@RequestBody Map<String, String> delData) {
-        //System.out.println(delData);
+        System.out.println("회원탈퇴를 진행합니다.");
         String getId = delData.get("id");
+        //회원 정보 삭제 5종세트
+        dao.memberReservationDelete(getId);
+        dao.memberInquiryDelete(getId);
+        dao.memberReviewDelete(getId);
+        dao.memberReviewLikeDelete(getId);
+        dao.memberRestaurantLikeDelete(getId);
+        //마지막 회원 탈퇴만 boolean으로 리턴
         boolean isTrue = dao.memberDelete(getId);
         return new ResponseEntity<>(isTrue, HttpStatus.OK);
     }
+
 
     @PostMapping("/newMember")
     public ResponseEntity<Boolean> memberInsert(@RequestBody memberInfo mem){

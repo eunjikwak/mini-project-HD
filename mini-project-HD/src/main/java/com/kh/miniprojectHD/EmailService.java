@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.MailException;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Service;
 
 import javax.mail.Message;
@@ -30,7 +31,7 @@ public class EmailService {
         msg.setSubject("허당 회원가입 이메일 인증"); // 제목
         String msgs = "";
         msgs += "<div style='margin:100px;'>";
-        msgs += "<h1> 안녕하세요</h1>";
+        msgs += "<h1> 안녕하세요?</h1>";
         msgs += "<h1> 평범한 식사도 허투루 할 수 없는 당신을 위해, 허당입니다</h1>";
         msgs += "<br>";
         msgs += "<p>아래 코드를 회원가입 창으로 돌아가 입력해주세요<p>";
@@ -55,7 +56,7 @@ public class EmailService {
         msg.setSubject("허당 사업자 회원가입 이메일 인증"); // 제목
         String msgs = "";
         msgs += "<div style='margin:100px;'>";
-        msgs += "<h1> 안녕하세요</h1>";
+        msgs += "<h1> 안녕하세요?</h1>";
         msgs += "<h1> 평범한 식사도 허투루 할 수 없는 당신을 위해, 허당입니다</h1>";
         msgs += "<br>";
         msgs += "<p>아래 코드를 회원가입 창으로 돌아가 입력해주세요<p>";
@@ -82,7 +83,7 @@ public class EmailService {
         msg.setSubject("허당 ID찾기 서비스"); // 제목
         String msgs = "";
         msgs += "<div style='margin:100px;'>";
-        msgs += "<h1> 안녕하세요</h1>";
+        msgs += "<h1> 안녕하세요?</h1>";
         msgs += "<h1> 평범한 식사도 허투루 할 수 없는 당신을 위해, 허당입니다</h1>";
         msgs += "<br>";
         msgs += "<div align='center' style='border:1px solid black; font-family:verdana';>";
@@ -105,7 +106,7 @@ public class EmailService {
         msg.setSubject("허당 비밀번호 변경 이메일"); // 제목
         String msgs = "";
         msgs += "<div style='margin:100px;'>";
-        msgs += "<h1> 안녕하세요</h1>";
+        msgs += "<h1> 안녕하세요?</h1>";
         msgs += "<h1> 평범한 식사도 허투루 할 수 없는 당신을 위해, 허당입니다</h1>";
         msgs += "<br>";
         msgs += "<p>임시 비밀번호를 발급해드렸습니다. 마이페이지에서 비밀번호를 새롭게 변경해주세요.<p>";
@@ -116,6 +117,29 @@ public class EmailService {
         msgs += "임시 비밀번호 : <strong>";
         msgs += pwd + "</strong><div><br/> "; // 메일에 인증번호 넣기
         msgs += "</div>";
+        msg.setText(msgs, "utf-8", "html");// 내용, charset 타입, subtype
+        // 보내는 사람의 이메일 주소, 보내는 사람 이름
+        msg.setFrom(new InternetAddress("heodangreview@naver.com", "Heodang_Admin"));// 보내는 사람
+        return msg;
+    }
+
+    //문의 등록시 회원에게 보낼 메시지
+    public MimeMessage inquiryMessage(String to, String nickname, String restName) throws MessagingException, UnsupportedEncodingException {
+
+        MimeMessage msg = ms.createMimeMessage();
+        msg.addRecipients(Message.RecipientType.TO, to); // 보내는 대상
+        String title = restName + " 매장에 대한 " + nickname + "님의 문의가 등록되었습니다.";
+        msg.setSubject(title); // 제목
+        String msgs = "";
+        msgs += "<div style='margin:100px;'>";
+        msgs += "<h1> 안녕하세요?</h1>";
+        msgs += "<h1> 평범한 식사도 허투루 할 수 없는 당신을 위해, 허당입니다</h1>";
+        msgs += "<br>";
+        msgs += "<p>" + title + "<p>";
+        msgs += "<br>";
+        msgs += "<p>현재 답변대기 상태로, 답변이 완료되면 다시 알림을 드리도록 하겠습니다. <p>";
+        msgs += "<br>";
+        msgs += "<p>감사합니다.<p>";
         msg.setText(msgs, "utf-8", "html");// 내용, charset 타입, subtype
         // 보내는 사람의 이메일 주소, 보내는 사람 이름
         msg.setFrom(new InternetAddress("heodangreview@naver.com", "Heodang_Admin"));// 보내는 사람
@@ -200,6 +224,18 @@ public class EmailService {
             throw new IllegalArgumentException();
         }
         return result; // 서버에 ID찾기에 성공했다고 TRUE를 반환. TRUE일 때 이메일 확인하라는 문구 출력
+    }
+
+    public void inquirySendMessage(String to, String nickname, String restName) throws Exception{
+
+        MimeMessage msg = inquiryMessage(to, nickname, restName);
+        try{
+            ms.send(msg);
+        }catch (MailException e){
+            e.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+
     }
 
 }

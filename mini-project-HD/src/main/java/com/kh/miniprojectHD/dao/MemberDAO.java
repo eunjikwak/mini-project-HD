@@ -246,5 +246,143 @@ public class MemberDAO {
         else return false;
     }
 
+    //멤버 삭제를 위해 리뷰 먼저 삭제
+    public void memberReviewDelete(String id){
+        System.out.println("회원 리뷰내역 삭제");
+        try {
+            String sql = "DELETE FROM REVIEW WHERE MEMBER_ID = ?";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1,id);
+            System.out.println(id);
+            pStmt.executeUpdate();
 
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+    }
+
+    //멤버 삭제를 위해 리뷰-좋아요 삭제
+    public void memberReviewLikeDelete(String id){
+        System.out.println("회원 리뷰_좋아요 내역 삭제");
+        
+        try {
+            String sql = "DELETE FROM REVIEW_LIKE WHERE MEMBER_ID = ?";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1,id);
+            System.out.println(id);
+            pStmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+    }
+
+    //멤버 삭제를 위해 문의 먼저 삭제
+    public void memberInquiryDelete(String id){
+        System.out.println("회원 문의내역 삭제");
+        
+        try {
+            String sql = "DELETE FROM INQUIRY WHERE MEMBER_ID = ?";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1,id);
+            System.out.println(id);
+            pStmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+    }
+    
+    //멤버 삭제를 위해 레스토랑 좋아요 삭제
+    public void memberRestaurantLikeDelete(String id){
+        System.out.println("회원 매장 찜 내역 삭제");
+        
+        try {
+            String sql = "DELETE FROM RESTAURANT_LIKE WHERE MEMBER_ID = ?";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1,id);
+            System.out.println(id);
+            pStmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+    }
+    
+    //멤버 삭제를 위해 예약내역 삭제
+
+    public void memberReservationDelete(String id){
+        System.out.println("회원 예약내역 삭제");
+        try {
+            String sql = "DELETE FROM RESERVATION WHERE MEMBER_ID = ?";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1,id);
+            System.out.println(id);
+            pStmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+    }
+
+    //ID로 이메일 가져옴
+    public String memberEmail(String id){
+        System.out.println("ID로 이메일 가져오기");
+        String email = "";
+        try {
+            conn = Common.getConnection();
+            stmt = conn.createStatement();
+            String sql = "SELECT EMAIL FROM MEMBER_INFO WHERE MEMBER_ID = " + "'" + id +"'";
+            rs = stmt.executeQuery(sql);
+
+            while(rs.next()){
+                email = rs.getString("EMAIL");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(rs);
+        Common.close(stmt);
+        Common.close(conn);
+
+        return email;
+    }
+
+    //ID로 닉네임 가져옴
+    public String memberNickname(String id){
+        System.out.println("ID로 닉네임 가져오기");
+        String nickname = "";
+        try {
+            conn = Common.getConnection();
+            stmt = conn.createStatement();
+            String sql = "SELECT NICKNAME FROM MEMBER_INFO WHERE MEMBER_ID = " + "'" + id +"'";
+            rs = stmt.executeQuery(sql);
+
+            while(rs.next()){
+                nickname = rs.getString("NICKNAME");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(rs);
+        Common.close(stmt);
+        Common.close(conn);
+
+        return nickname;
+    }
 }

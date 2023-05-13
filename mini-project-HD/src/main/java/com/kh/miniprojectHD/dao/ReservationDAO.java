@@ -82,6 +82,31 @@ public class ReservationDAO {
         if(result == 1) return true;
         else return false;
     }
+    // 예약 변경
+    public boolean updateRes(String resDate,String resReq,int resSeat,int resPeo,int resId) {
+        int result = 0;
+        String sql = "UPDATE RESERVATION SET RESERVATION_DATE = TO_DATE(?,'YYYY-MM-DD HH24:MI:SS'),RESERVATION_REQUEST =?,RESERVATION_SEAT =? ,RESERVATION_PEOPLE =? WHERE RESERVATION_ID=?";
+
+        try {
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, resDate);
+            pStmt.setString(2, resReq);
+            pStmt.setInt(3, resSeat);
+            pStmt.setInt(4, resPeo);
+            pStmt.setInt(5, resId);
+
+            result = pStmt.executeUpdate();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+        if(result == 1) return true;
+        else return false;
+    }
+
     //사업자 예약조회
     public List<ReservationVO> businessResvSelect(String id) {
         List<ReservationVO> list = new ArrayList<>();

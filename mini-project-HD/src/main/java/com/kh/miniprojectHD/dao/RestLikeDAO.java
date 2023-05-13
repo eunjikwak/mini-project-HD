@@ -46,15 +46,17 @@ public class RestLikeDAO {
         return list;
     }
     // 찜 등록
-    public boolean addRestLike(String restId, String memId) {
+    public boolean addRestLike(String restId, String memId,String name) {
         int result = 0;
-        String sql = "INSERT INTO RESTAURANT_LIKE(RESTAURANT_ID,MEMBER_ID) VALUES(?,?)";
+        String sql = "INSERT INTO RESTAURANT_LIKE(RESTAURANT_ID,MEMBER_ID,RESTAURANT_NAME) VALUES(?,?,?)";
 
         try {
             conn = Common.getConnection();
             pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, restId);
             pStmt.setString(2, memId);
+            pStmt.setString(3, name);
+
             result = pStmt.executeUpdate();
 
         } catch (Exception e) {

@@ -40,7 +40,19 @@ public class ReservationController {
         boolean list = dao.addRes(getRestId,getMemberId,getResDate,getResReq,getResSeat,getResPeo);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
+    //예약 변경
+    @PostMapping("/restaurant/update/reservation")
+    public ResponseEntity<Boolean> updateRes(@RequestBody Map<String, String> resData){
 
+        String getResDate = resData.get("resDate");
+        String getResReq = resData.get("resReq");
+        int getResSeat = Integer.parseInt(resData.get("resSeat"));
+        int getResPeo = Integer.parseInt(resData.get("resPeo"));
+        int getResId = Integer.parseInt(resData.get("resId"));
+
+        boolean list = dao.updateRes(getResDate,getResReq,getResSeat,getResPeo,getResId);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
     //사업자 예약 조회
     @GetMapping("/business/resv")
     public ResponseEntity<List<ReservationVO>> businessResvList (@RequestParam String id) {
