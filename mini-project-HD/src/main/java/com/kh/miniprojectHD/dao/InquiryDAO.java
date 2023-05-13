@@ -3,6 +3,7 @@ package com.kh.miniprojectHD.dao;
 import com.kh.miniprojectHD.common.Common;
 import com.kh.miniprojectHD.vo.InquiryVO;
 import com.kh.miniprojectHD.vo.MemberVO;
+import com.kh.miniprojectHD.vo.RestMenuVO;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -111,5 +112,32 @@ public class InquiryDAO {
 
         }
         return list;
+    }
+
+    //문의 답변
+    public Boolean inquiryAnswerUpdate(InquiryVO vo) {
+        try {
+            System.out.println(vo.getInquiryStat());
+            String sql = "UPDATE INQUIRY SET INQUIRY_TITLE=?, INQUIRY_CONTENT=?, INQUIRY_ANSWER=?,INQUIRY_IMAGE_FILE_NAME=?,INQUIRY_CONDITION=?  WHERE INQUIRY_ID = ?";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+
+                pStmt.setString(1,vo.getInquiryTitle());
+                pStmt.setString(2,vo.getInquiryContent());
+                pStmt.setString(3,vo.getInquiryAnswer());
+                pStmt.setString(4,vo.getInquiryImgFileName());
+                pStmt.setString(5,vo.getInquiryStat());
+                pStmt.setInt(6,vo.getInquiryId());
+                pStmt.executeUpdate();
+
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+        return false;
+
     }
 }

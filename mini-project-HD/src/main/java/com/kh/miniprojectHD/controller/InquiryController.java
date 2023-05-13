@@ -2,7 +2,9 @@ package com.kh.miniprojectHD.controller;
 
 
 import com.kh.miniprojectHD.dao.InquiryDAO;
+import com.kh.miniprojectHD.dao.RestMenuDAO;
 import com.kh.miniprojectHD.vo.InquiryVO;
+import com.kh.miniprojectHD.vo.RestMenuVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -36,10 +38,20 @@ public class InquiryController {
         boolean list = dao.addInquiry(getRestId, getMemberId, getTitle, getContent,getImage);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
+
+    //사업자페이지 문의조회
     @GetMapping("/business/inquiry")
     public ResponseEntity<List<InquiryVO>> businessInquiryList (@RequestParam String id) {
         List<InquiryVO> list = dao.businessInquiry(id);
         return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    //사업자페이지 답변등록
+    @PostMapping("/business/inquiry/answer/update")
+    public ResponseEntity<Boolean> updateInquiryAnswer(@RequestBody Map<String, InquiryVO> inquiryData) {
+        InquiryVO vo = inquiryData.get("vo");
+        boolean result = dao.inquiryAnswerUpdate(vo);
+        return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
 
