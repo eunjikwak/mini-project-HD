@@ -8,6 +8,7 @@ import java.sql.Date;
 @Setter
 
 public class ReviewJoinVO {
+    private String restId;
     private String nickName;
     private int reviewId;
     private String reviewTitle;

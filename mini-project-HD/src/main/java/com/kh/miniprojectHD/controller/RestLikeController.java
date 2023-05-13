@@ -29,8 +29,8 @@ public class RestLikeController {
     public ResponseEntity<Boolean> addRestLike(@RequestBody Map<String, String> likeData) {
         String getRestId = likeData.get("restId");
         String getMemberId = likeData.get("memberId");
-
-        boolean list = dao.addRestLike(getRestId, getMemberId);
+        String getName = likeData.get("restName");
+        boolean list = dao.addRestLike(getRestId, getMemberId,getName);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
     // 찜 삭제
