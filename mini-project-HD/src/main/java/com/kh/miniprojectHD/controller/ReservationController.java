@@ -2,8 +2,10 @@ package com.kh.miniprojectHD.controller;
 
 import com.kh.miniprojectHD.dao.InquiryDAO;
 import com.kh.miniprojectHD.dao.ReservationDAO;
+import com.kh.miniprojectHD.dao.RestMenuDAO;
 import com.kh.miniprojectHD.vo.InquiryVO;
 import com.kh.miniprojectHD.vo.ReservationVO;
+import com.kh.miniprojectHD.vo.RestMenuVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -55,8 +57,16 @@ public class ReservationController {
     }
     //사업자 예약 조회
     @GetMapping("/business/resv")
-    public ResponseEntity<List<ReservationVO>> businessResvList (@RequestParam String id) {
-        List<ReservationVO> list = dao.businessResvSelect(id);
+    public ResponseEntity<List<ReservationVO>> businessResvList (@RequestParam String id,String stat) {
+        List<ReservationVO> list = dao.businessResvSelect(id,stat);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
+    //사업자 예약 확정하기
+    @PostMapping("/business/resv/stat/update")
+    public ResponseEntity<Boolean> updateMenu(@RequestBody Map<String, ReservationVO[]> resvData) {
+        ReservationVO[] resvList = resvData.get("vo");
+        boolean result = dao.resvStatUpdate(resvList);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
 }

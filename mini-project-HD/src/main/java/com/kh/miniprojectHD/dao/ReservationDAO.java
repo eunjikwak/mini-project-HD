@@ -4,6 +4,7 @@ import com.kh.miniprojectHD.common.Common;
 import com.kh.miniprojectHD.vo.InquiryVO;
 import com.kh.miniprojectHD.vo.MemberVO;
 import com.kh.miniprojectHD.vo.ReservationVO;
+import com.kh.miniprojectHD.vo.RestMenuVO;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
@@ -108,13 +109,13 @@ public class ReservationDAO {
     }
 
     //사업자 예약조회
-    public List<ReservationVO> businessResvSelect(String id) {
+    public List<ReservationVO> businessResvSelect(String id, String stat) {
         List<ReservationVO> list = new ArrayList<>();
         try {
             conn = Common.getConnection(); //연결
             stmt = conn.createStatement(); //정적인 sql 사용
             System.out.println(id);
-            String sql = "SELECT *FROM RESERVATION WHERE RESTAURANT_ID = '" + id + "'";
+            String sql = "SELECT * FROM RESERVATION WHERE RESTAURANT_ID = '" + id + "' AND RESERVATION_CONDITION ='"+ stat + "' ORDER BY APPLICATION_DATE DESC ,RESERVATION_ID DESC";
             rs = stmt.executeQuery(sql); //
             while(rs.next()){ //읽을 행이 있으면 참
                 int resvId = rs.getInt("RESERVATION_ID");
@@ -141,5 +142,27 @@ public class ReservationDAO {
         return list;
     }
 
+    //예약 상태 변경
+    public boolean resvStatUpdate(ReservationVO[] vo) {
+        String sql = "UPDATE RESERVATION SET RESERVATION_CONDITION =?  WHERE RESERVATION_ID=?";
+
+        try {
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            for (ReservationVO resv : vo) {
+                pStmt.setString(1,"예약확정");
+                pStmt.setInt(2, resv.getResvId());
+            }
+
+            pStmt.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+
+        return false;
+    }
 }
 
