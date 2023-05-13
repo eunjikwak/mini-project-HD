@@ -1,7 +1,9 @@
 package com.kh.miniprojectHD.controller;
 
 
+import com.kh.miniprojectHD.EmailService;
 import com.kh.miniprojectHD.dao.InquiryDAO;
+import com.kh.miniprojectHD.dao.MemberDAO;
 import com.kh.miniprojectHD.vo.InquiryVO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -26,12 +28,19 @@ public class InquiryController {
 
     //문의 추가
     @PostMapping("/restaurant/add/inquiry")
-    public ResponseEntity<Boolean> addInquiry(@RequestBody Map<String, String> inquiryData) {
+    public ResponseEntity<Boolean> addInquiry(@RequestBody Map<String, String> inquiryData){
         String getRestId = inquiryData.get("restId");
+        String getRestName = inquiryData.get("restName");
         String getMemberId = inquiryData.get("memberId");
         String getTitle = inquiryData.get("title");
         String getContent = inquiryData.get("content");
         String getImage = inquiryData.get("image");
+
+//        EmailService es = new EmailService();
+//        MemberDAO mDao = new MemberDAO();
+//        String to = mDao.memberEmail(getMemberId);
+//        String nickname = mDao.memberNickname(getMemberId);
+//        es.inquirySendMessage(to, nickname, getRestName);
 
         boolean list = dao.addInquiry(getRestId, getMemberId, getTitle, getContent,getImage);
         return new ResponseEntity<>(list, HttpStatus.OK);

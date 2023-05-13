@@ -339,4 +339,50 @@ public class MemberDAO {
         Common.close(pStmt);
         Common.close(conn);
     }
+
+    //ID로 이메일 가져옴
+    public String memberEmail(String id){
+        System.out.println("ID로 이메일 가져오기");
+        String email = "";
+        try {
+            conn = Common.getConnection();
+            stmt = conn.createStatement();
+            String sql = "SELECT EMAIL FROM MEMBER_INFO WHERE MEMBER_ID = " + "'" + id +"'";
+            rs = stmt.executeQuery(sql);
+
+            while(rs.next()){
+                email = rs.getString("EMAIL");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(rs);
+        Common.close(stmt);
+        Common.close(conn);
+
+        return email;
+    }
+
+    //ID로 닉네임 가져옴
+    public String memberNickname(String id){
+        System.out.println("ID로 닉네임 가져오기");
+        String nickname = "";
+        try {
+            conn = Common.getConnection();
+            stmt = conn.createStatement();
+            String sql = "SELECT NICKNAME FROM MEMBER_INFO WHERE MEMBER_ID = " + "'" + id +"'";
+            rs = stmt.executeQuery(sql);
+
+            while(rs.next()){
+                nickname = rs.getString("NICKNAME");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(rs);
+        Common.close(stmt);
+        Common.close(conn);
+
+        return nickname;
+    }
 }
