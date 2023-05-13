@@ -28,7 +28,6 @@ public class InquiryController {
     @PostMapping("/restaurant/add/inquiry")
     public ResponseEntity<Boolean> addInquiry(@RequestBody Map<String, String> inquiryData){
         String getRestId = inquiryData.get("restId");
-        String getRestName = inquiryData.get("restName");
         String getMemberId = inquiryData.get("memberId");
         String getTitle = inquiryData.get("title");
         String getContent = inquiryData.get("content");
