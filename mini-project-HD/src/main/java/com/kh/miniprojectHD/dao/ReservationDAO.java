@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +33,7 @@ public class ReservationDAO {
             System.out.println(id);
             String sql = "SELECT RESERVATION_ID, RE.MEMBER_ID, RE.RESTAURANT_ID, R.RESTAURANT_NAME, RESERVATION_DATE, APPLICATION_DATE, CONFIRM_DATE, RESERVATION_REQUEST, RESERVATION_SEAT, RESERVATION_PEOPLE, RESERVATION_CONDITION " +
                         "FROM RESERVATION RE JOIN RESTAURANT R ON RE.RESTAURANT_ID = R.RESTAURANT_ID " +
-                        "WHERE RE.MEMBER_ID = '" + id + "' AND RESERVATION_CONDITION = '" + stat + "'";
+                        "WHERE RE.MEMBER_ID = '" + id + "' AND RESERVATION_CONDITION = '" + stat + "' ORDER BY RESERVATION_DATE DESC ,RESERVATION_ID DESC";
             rs = stmt.executeQuery(sql); //
             while(rs.next()){ //읽을 행이 있으면 참
                 int resvId = rs.getInt("RESERVATION_ID");
@@ -45,7 +47,9 @@ public class ReservationDAO {
                 int resvSeat = rs.getInt("RESERVATION_SEAT");
                 int resvPeople = rs.getInt("RESERVATION_PEOPLE");
                 String resvStat = rs.getString("RESERVATION_CONDITION");
-                ReservationVO vo = new ReservationVO(resvId,memId,restId,restName,resvDate,applicationDate,confirmDate,resvRequest,resvSeat,resvPeople,resvStat);
+                LocalDateTime resvDateTime = rs.getTimestamp("RESERVATION_DATE").toLocalDateTime();
+                String ResvDateTime = resvDateTime.format(DateTimeFormatter.ofPattern("a hh:mm"));
+                ReservationVO vo = new ReservationVO(resvId,memId,restId,restName,resvDate,ResvDateTime,applicationDate,confirmDate,resvRequest,resvSeat,resvPeople,resvStat);
                 list.add(vo);
 
             }
@@ -115,9 +119,10 @@ public class ReservationDAO {
             conn = Common.getConnection(); //연결
             stmt = conn.createStatement(); //정적인 sql 사용
             System.out.println(id);
-            String sql = "SELECT * FROM RESERVATION WHERE RESTAURANT_ID = '" + id + "' AND RESERVATION_CONDITION ='"+ stat + "' ORDER BY APPLICATION_DATE DESC ,RESERVATION_ID DESC";
+            String sql = "SELECT * FROM RESERVATION WHERE RESTAURANT_ID = '" + id + "' AND RESERVATION_CONDITION ='"+ stat + "'  ORDER BY RESERVATION_DATE DESC ,RESERVATION_ID DESC";
             rs = stmt.executeQuery(sql); //
             while(rs.next()){ //읽을 행이 있으면 참
+
                 int resvId = rs.getInt("RESERVATION_ID");
                 String memId = rs.getString("MEMBER_ID");
                 String restId = rs.getString("RESTAURANT_ID");
@@ -128,7 +133,9 @@ public class ReservationDAO {
                 int resvSeat = rs.getInt("RESERVATION_SEAT");
                 int resvPeople = rs.getInt("RESERVATION_PEOPLE");
                 String resvStat = rs.getString("RESERVATION_CONDITION");
-                ReservationVO vo = new ReservationVO(resvId,memId,restId,null,resvDate,applicationDate,confirmDate,resvRequest,resvSeat,resvPeople,resvStat);
+                LocalDateTime resvDateTime = rs.getTimestamp("RESERVATION_DATE").toLocalDateTime();
+                String ResvDateTime = resvDateTime.format(DateTimeFormatter.ofPattern("a hh:mm"));
+                ReservationVO vo = new ReservationVO(resvId,memId,restId,null,resvDate,ResvDateTime,applicationDate,confirmDate,resvRequest,resvSeat,resvPeople,resvStat);
                 list.add(vo);
 
             }
@@ -163,6 +170,25 @@ public class ReservationDAO {
         Common.close(conn);
 
         return false;
+    }
+
+    //예약취소
+    public Boolean resvDelete(int id) {
+        try {
+            String sql = "DELETE FROM RESERVATION WHERE RESERVATION_ID = ?";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setInt(1,id);
+            pStmt.executeUpdate();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+        return false;
+
     }
 }
 

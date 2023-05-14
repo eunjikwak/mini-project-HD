@@ -69,4 +69,12 @@ public class ReservationController {
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
+    //예약취소
+    @PostMapping("/resv/delete")
+    public ResponseEntity<Boolean> delResv(@RequestBody Map<String, String> resvData) {
+        int resvId = Integer.parseInt(resvData.get("resvId"));
+        boolean list = dao.resvDelete(resvId);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
 }

@@ -16,21 +16,25 @@ public class RestLikeDAO {
     ResultSet rs = null;
     PreparedStatement pStmt = null;
 
-    //좋아요 조회
+    //찜 조회
     public List<RestLikeVO> restLikeSelect(String id) {
         List<RestLikeVO> list =new ArrayList<>();
         try {
             conn = Common.getConnection(); //연결
-            stmt = conn.createStatement(); //정적인 sql 사용
-            System.out.println(id);
-            String sql = "SELECT * FROM RESTAURANT_LIKE WHERE MEMBER_ID = "+ "'" + id + "'";
+            stmt = conn.createStatement();
+            String sql = "SELECT RL.RESTAURANT_ID, RL.RESTAURANT_NAME, RL.MEMBER_ID, TRUNC(AVG(REVIEW.RATING), 1) AS RATING "
+                    + "FROM RESTAURANT R "
+                    + "JOIN RESTAURANT_LIKE RL ON R.RESTAURANT_ID = RL.RESTAURANT_ID "
+                    + "LEFT JOIN REVIEW ON R.RESTAURANT_ID = REVIEW.RESTAURANT_ID "
+                    + "WHERE R.RESTAURANT_ID = RL.RESTAURANT_ID AND RL.MEMBER_ID = '" + id + "' "
+                    + "GROUP BY RL.RESTAURANT_ID, RL.RESTAURANT_NAME, RL.MEMBER_ID ";
 
             rs = stmt.executeQuery(sql); //
             while(rs.next()){ //읽을 행이 있으면 참
                 String restId = rs.getString("RESTAURANT_ID");
-                String memId = rs.getString("MEMBER_ID");
                 String restName = rs.getString("RESTAURANT_NAME");
-                int restRating = rs.getInt("RESTAURANT_RATING");
+                String memId = rs.getString("MEMBER_ID");
+                double restRating = rs.getDouble("RATING");
 
                 RestLikeVO vo = new RestLikeVO(restId,memId,restName,restRating);
                 list.add(vo);
@@ -86,6 +90,28 @@ public class RestLikeDAO {
         Common.close(conn);
         if(result == 1) return true;
         else return false;
+    }
+
+    //찜 숫자 조회
+    public int likeCntSelect(String id) {
+        int likeCnt=0;
+        try {
+            conn = Common.getConnection(); //연결
+            stmt = conn.createStatement();
+            String sql = "SELECT COUNT(*) AS CNT FROM RESTAURANT_LIKE  WHERE RESTAURANT_ID = '"+id +"'";
+            rs = stmt.executeQuery(sql); //
+            while(rs.next()){ //읽을 행이 있으면 참
+                likeCnt = rs.getInt("CNT");
+               return likeCnt;
+            }
+            Common.close(rs); // 연결과 역순으로 해제
+            Common.close(stmt);
+            Common.close(conn);
+        }catch(Exception e){
+            e.printStackTrace();
+
+        }
+        return likeCnt;
     }
 
 }

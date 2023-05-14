@@ -57,6 +57,13 @@ public class InquiryController {
         boolean result = dao.inquiryAnswerUpdate(vo);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
+    //마이페이지 문의 수정
+    @PostMapping("/inquiry/update")
+    public ResponseEntity<Boolean> updateInquiry(@RequestBody Map<String, InquiryVO> inquiryData) {
+        InquiryVO vo = inquiryData.get("vo");
+        boolean result = dao.inquiryAnswerUpdate(vo);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
 
 
 

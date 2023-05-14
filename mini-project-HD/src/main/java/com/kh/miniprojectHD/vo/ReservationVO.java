@@ -15,6 +15,7 @@ public class ReservationVO {
     private  String restId;
     private String restName;
     private Date resvDate;
+    private String resvTime;
     private Date applicationDate;
     private Date confirmDate;
     private String resvRequest;

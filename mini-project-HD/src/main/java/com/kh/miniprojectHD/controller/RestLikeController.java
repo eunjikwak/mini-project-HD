@@ -42,4 +42,11 @@ public class RestLikeController {
         boolean list = dao.delRestLike(getRestId, getMemberId);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
+
+    //찜 개수 조회
+    @GetMapping("/restLike/cnt")
+    public ResponseEntity<Integer> likeCntSelect (@RequestParam String id) {
+        Integer likeCnt = dao.likeCntSelect(id);
+        return new ResponseEntity<>(likeCnt, HttpStatus.OK);
+    }
 }

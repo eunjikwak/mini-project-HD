@@ -29,7 +29,7 @@ public class ReviewDAO {
             String sql= "SELECT REVIEW_ID, RE.MEMBER_ID, R.RESTAURANT_ID, R.RESTAURANT_NAME, REVIEW_TITLE, REVIEW_CONTENT, REVIEW_IMAGE_FILE_NAME, REVIEW_DATE, RATING\n" +
                     "FROM REVIEW RE\n" +
                     "JOIN RESTAURANT R ON RE.RESTAURANT_ID = R.RESTAURANT_ID\n" +
-                    "WHERE RE.MEMBER_ID ='" + id + "'";
+                    "WHERE RE.MEMBER_ID ='" + id + "' ORDER BY REVIEW_DATE DESC , REVIEW_ID DESC";
             rs = stmt.executeQuery(sql); //
             while(rs.next()){
                 int reviewId = rs.getInt("REVIEW_ID");
