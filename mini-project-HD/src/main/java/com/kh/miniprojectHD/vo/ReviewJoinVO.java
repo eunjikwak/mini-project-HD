@@ -9,6 +9,7 @@ import java.sql.Date;
 
 public class ReviewJoinVO {
     private String restId;
+    private String memId;
     private String nickName;
     private int reviewId;
     private String reviewTitle;

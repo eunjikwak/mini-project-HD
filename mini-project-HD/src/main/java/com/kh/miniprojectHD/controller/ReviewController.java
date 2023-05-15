@@ -58,4 +58,25 @@ public class ReviewController {
         List<ReviewJoinVO> list = dao.detailSelect(vo);
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
+    @PostMapping("/review/update")
+    public ResponseEntity<Boolean> updateRev(@RequestBody Map<String, String> revData) {
+        String getTitle = revData.get("title");
+        String getContent = revData.get("content");
+        Double getRating = Double.parseDouble(revData.get("rating"));
+        String getImage = revData.get("image");
+        int getId= Integer.parseInt(revData.get("reviewId"));
+
+        boolean list = dao.updateReview(getTitle,getContent,getRating,getImage,getId);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @PostMapping("/review/delete")
+    public ResponseEntity<Boolean> delRev(@RequestBody Map<String, String> revData) {
+        int revId = Integer.parseInt(revData.get("reviewId"));
+
+        boolean list = dao.revDelete(revId);
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+
 }

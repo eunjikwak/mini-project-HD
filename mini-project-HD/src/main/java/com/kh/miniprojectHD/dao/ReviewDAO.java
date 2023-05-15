@@ -60,13 +60,14 @@ public class ReviewDAO {
         List<ReviewJoinVO> list = new ArrayList<>();
 
         try{
-            String sql ="SELECT M.NICKNAME,R.REVIEW_ID,R.REVIEW_TITLE,R.REVIEW_CONTENT,R.RATING,R.REVIEW_DATE,COUNT(L.REVIEW_ID),REVIEW_IMAGE_FILE_NAME FROM REVIEW R JOIN MEMBER_INFO M ON R.MEMBER_ID = M.MEMBER_ID LEFT JOIN REVIEW_LIKE L ON R.REVIEW_ID = L.REVIEW_ID WHERE R.RESTAURANT_ID = ? GROUP BY M.NICKNAME, R.REVIEW_ID, R.REVIEW_TITLE, R.REVIEW_CONTENT, R.RATING, R.REVIEW_DATE,REVIEW_IMAGE_FILE_NAME";
+            String sql ="SELECT M.NICKNAME,M.MEMBER_ID,R.REVIEW_ID,R.REVIEW_TITLE,R.REVIEW_CONTENT,R.RATING,R.REVIEW_DATE,COUNT(L.REVIEW_ID),REVIEW_IMAGE_FILE_NAME FROM REVIEW R JOIN MEMBER_INFO M ON R.MEMBER_ID = M.MEMBER_ID LEFT JOIN REVIEW_LIKE L ON R.REVIEW_ID = L.REVIEW_ID WHERE R.RESTAURANT_ID = ? GROUP BY M.NICKNAME,M.MEMBER_ID, R.REVIEW_ID, R.REVIEW_TITLE, R.REVIEW_CONTENT, R.RATING, R.REVIEW_DATE,REVIEW_IMAGE_FILE_NAME";
             conn = Common.getConnection();
             pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, restaurantVO.getRestId());
             rs = pStmt.executeQuery();
             while (rs.next()){
                 String nickName = rs.getString("NICKNAME");
+                String memberId = rs.getString("MEMBER_ID");
                 int reviewId = rs.getInt("REVIEW_ID");
                 String title = rs.getString("REVIEW_TITLE");
                 String content = rs.getString("REVIEW_CONTENT");
@@ -77,6 +78,7 @@ public class ReviewDAO {
 
                 ReviewJoinVO vo = new ReviewJoinVO();
                 vo.setNickName(nickName);
+                vo.setMemId(memberId);
                 vo.setReviewId(reviewId);
                 vo.setReviewTitle(title);
                 vo.setReviewContent(content);
@@ -128,13 +130,14 @@ public class ReviewDAO {
         List<ReviewJoinVO> list = new ArrayList<>();
 
         try{
-            String sql ="SELECT M.NICKNAME,R.REVIEW_ID,R.REVIEW_TITLE,R.REVIEW_CONTENT,R.RATING,R.REVIEW_DATE,COUNT(L.REVIEW_ID),REVIEW_IMAGE_FILE_NAME, RESTAURANT_ID FROM REVIEW R JOIN MEMBER_INFO M ON R.MEMBER_ID = M.MEMBER_ID LEFT JOIN REVIEW_LIKE L ON R.REVIEW_ID = L.REVIEW_ID WHERE R.REVIEW_ID = ? GROUP BY M.NICKNAME, R.REVIEW_ID, R.REVIEW_TITLE, R.REVIEW_CONTENT, R.RATING, R.REVIEW_DATE,REVIEW_IMAGE_FILE_NAME,RESTAURANT_ID";
+            String sql ="SELECT M.NICKNAME,M.MEMBER_ID,R.REVIEW_ID,R.REVIEW_TITLE,R.REVIEW_CONTENT,R.RATING,R.REVIEW_DATE,COUNT(L.REVIEW_ID),REVIEW_IMAGE_FILE_NAME, RESTAURANT_ID FROM REVIEW R JOIN MEMBER_INFO M ON R.MEMBER_ID = M.MEMBER_ID LEFT JOIN REVIEW_LIKE L ON R.REVIEW_ID = L.REVIEW_ID WHERE R.REVIEW_ID = ? GROUP BY M.NICKNAME,M.MEMBER_ID, R.REVIEW_ID, R.REVIEW_TITLE, R.REVIEW_CONTENT, R.RATING, R.REVIEW_DATE,REVIEW_IMAGE_FILE_NAME,RESTAURANT_ID";
             conn = Common.getConnection();
             pStmt = conn.prepareStatement(sql);
             pStmt.setInt(1, reviewVO.getReviewId());
             rs = pStmt.executeQuery();
             while (rs.next()){
                 String nickName = rs.getString("NICKNAME");
+                String memId=rs.getString("MEMBER_ID");
                 int reviewId = rs.getInt("REVIEW_ID");
                 String title = rs.getString("REVIEW_TITLE");
                 String content = rs.getString("REVIEW_CONTENT");
@@ -146,6 +149,7 @@ public class ReviewDAO {
 
                 ReviewJoinVO vo = new ReviewJoinVO();
                 vo.setNickName(nickName);
+                vo.setMemId(memId);
                 vo.setReviewId(reviewId);
                 vo.setReviewTitle(title);
                 vo.setReviewContent(content);
@@ -165,4 +169,50 @@ public class ReviewDAO {
         }
         return list;
     }
+
+    //리뷰 수정
+    public boolean updateReview(String title, String content, double rating,String image,int revId) {
+        int result = 0;
+        String sql = "UPDATE REVIEW SET REVIEW_TITLE =?,REVIEW_CONTENT=?,RATING=?,REVIEW_IMAGE_FILE_NAME=? WHERE REVIEW_ID=?";
+
+        try {
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, title);
+            pStmt.setString(2, content);
+            pStmt.setDouble(3, rating);
+            pStmt.setString(4, image);
+            pStmt.setInt(5, revId);
+
+            result = pStmt.executeUpdate();
+
+            System.out.println(result);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+        if(result == 1) return true;
+        else return false;
+    }
+    //리뷰 삭제
+    public Boolean revDelete(int id) {
+        try {
+            String sql = "DELETE FROM REVIEW WHERE REVIEW_ID = ?";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setInt(1,id);
+            pStmt.executeUpdate();
+            return true;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+        return false;
+
+    }
+
 }
