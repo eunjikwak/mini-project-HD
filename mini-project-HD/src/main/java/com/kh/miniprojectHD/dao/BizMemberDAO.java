@@ -117,4 +117,48 @@ public class BizMemberDAO {
         Common.close(conn);
         return isNotReg; // 가입 되어 있으면 false, 가입이 안되어 있으면 true
     }
+
+    public String bizMemberId(String restId){
+        String memberId = "";
+
+        try {
+            conn = Common.getConnection();
+            stmt = conn.createStatement();
+            String sql = "SELECT MEMBER_ID FROM RESTAURANT WHERE RESTAURANT_ID = " + "'" + restId +"'";
+            rs = stmt.executeQuery(sql);
+
+            while(rs.next()){
+                memberId = rs.getString("MEMBER_ID");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(rs);
+        Common.close(stmt);
+        Common.close(conn);
+
+        return memberId;
+    }
+
+    public String bizMemberEmail(String bizMemId){
+        String bizMemberEmail = "";
+        try {
+            conn = Common.getConnection();
+            stmt = conn.createStatement();
+            String sql = "SELECT EMAIL FROM B_MEMBER WHERE MEMBER_ID = " + "'" + bizMemId +"'";
+            rs = stmt.executeQuery(sql);
+
+            while(rs.next()){
+                bizMemberEmail = rs.getString("EMAIL");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(rs);
+        Common.close(stmt);
+        Common.close(conn);
+
+        return bizMemberEmail;
+    }
+
 }

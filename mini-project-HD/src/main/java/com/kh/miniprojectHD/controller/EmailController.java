@@ -1,6 +1,8 @@
 package com.kh.miniprojectHD.controller;
 
 import com.kh.miniprojectHD.EmailService;
+import com.kh.miniprojectHD.dao.BizMemberDAO;
+import com.kh.miniprojectHD.dao.MemberDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -50,6 +52,34 @@ public class EmailController {
         String id = object.get("id");
         Boolean result = es.findPwSendMessage(mail, id);
         return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping("/restaurant/add/inquiry/sendMsg")
+    public ResponseEntity<Boolean> mailSendMemberInquiry(@RequestBody Map<String, String> object) throws Exception{
+        System.out.println("문의 등록 메일 컨트롤러 작동");
+        String restName = object.get("restName");
+        String id = object.get("memberId");
+        MemberDAO dao = new MemberDAO();
+        String memberNickname = dao.memberNickname(id);
+        String memberEmail = dao.memberEmail(id);
+        Boolean result = es.inquirySendMessage(memberEmail, memberNickname, restName);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    @PostMapping("/restaurant/add/inquiry/sendMsgBiz")
+    public ResponseEntity<Boolean> mailSendBizMemberInquiry(@RequestBody Map<String, String> object) throws Exception{
+        System.out.println("사업자 회원에게 문의 등록 알림 메일 발송 컨트롤러 작동");
+        String restName = object.get("restName");
+        String restId = object.get("restId");
+        String memId = object.get("memberId");
+        MemberDAO dao = new MemberDAO();
+        String memberNickname = dao.memberNickname(memId);
+        BizMemberDAO bDao = new BizMemberDAO();
+        String bizMemId = bDao.bizMemberId(restId);
+        String bizMemEmail = bDao.bizMemberEmail(bizMemId);
+        Boolean result = es.inquirySendBizMessage(bizMemEmail, bizMemId, memberNickname, restName);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+
     }
 
 }

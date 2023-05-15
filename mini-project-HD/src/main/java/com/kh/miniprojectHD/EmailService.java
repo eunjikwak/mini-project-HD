@@ -146,6 +146,29 @@ public class EmailService {
         return msg;
     }
 
+    //문의 등록시 사업자 회원에게 보낼 메시지
+    public MimeMessage inquiryBizMessage(String to, String bizMemId, String nickname, String restName) throws MessagingException, UnsupportedEncodingException {
+
+        MimeMessage msg = ms.createMimeMessage();
+        msg.addRecipients(Message.RecipientType.TO, to); // 보내는 대상
+        String title = bizMemId+ "님께서 운영하시는 " + restName + " 매장에 대한 " + nickname + "님의 새로운 문의가 등록되었습니다.";
+        msg.setSubject(title); // 제목
+        String msgs = "";
+        msgs += "<div style='margin:100px;'>";
+        msgs += "<h1> 안녕하세요?</h1>";
+        msgs += "<h1> 평범한 식사도 허투루 할 수 없는 당신을 위해, 허당입니다</h1>";
+        msgs += "<br>";
+        msgs += "<p>" + title + "<p>";
+        msgs += "<br>";
+        msgs += "<p>현재 문의가 답변대기 상태로, 문의에 대해 답변을 해주시면 감사하겠습니다. <p>";
+        msgs += "<br>";
+        msgs += "<p>감사합니다.<p>";
+        msg.setText(msgs, "utf-8", "html");// 내용, charset 타입, subtype
+        // 보내는 사람의 이메일 주소, 보내는 사람 이름
+        msg.setFrom(new InternetAddress("heodangreview@naver.com", "Heodang_Admin"));// 보내는 사람
+        return msg;
+    }
+
     // 인증코드를 만드는 메소드
     public String createKey() {
         StringBuffer key = new StringBuffer();
@@ -226,11 +249,24 @@ public class EmailService {
         return result; // 서버에 ID찾기에 성공했다고 TRUE를 반환. TRUE일 때 이메일 확인하라는 문구 출력
     }
 
-    public void inquirySendMessage(String to, String nickname, String restName) throws Exception{
+    public Boolean inquirySendMessage(String to, String nickname, String restName) throws Exception{
 
         MimeMessage msg = inquiryMessage(to, nickname, restName);
         try{
             ms.send(msg);
+            return true;
+        }catch (MailException e){
+            e.printStackTrace();
+            throw new IllegalArgumentException();
+        }
+
+    }
+
+    public Boolean inquirySendBizMessage(String to, String bizMemId, String nickname, String restName) throws Exception{
+        MimeMessage msg = inquiryBizMessage(to, bizMemId, nickname, restName);
+        try{
+            ms.send(msg);
+            return true;
         }catch (MailException e){
             e.printStackTrace();
             throw new IllegalArgumentException();
