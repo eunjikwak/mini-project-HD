@@ -41,6 +41,7 @@ public class ReviewDAO {
                 String reviewFileName = rs.getString("REVIEW_IMAGE_FILE_NAME");
                 Date reviewDate = rs.getDate("REVIEW_DATE");
                 int rating = rs.getInt("RATING");
+
                 ReviewVO vo = new ReviewVO(reviewId,memId,restId,restName,reviewTitle,reviewContent,reviewFileName,reviewDate,rating); //하나의 행(레코드)에 대한 정보저장을 위한 객체생성
                 list.add(vo);
 

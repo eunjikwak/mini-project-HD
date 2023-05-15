@@ -259,7 +259,6 @@ public class SearchDAO {
                 vo.setRating(rating);
                 vo.setReviews(reviews);
                 list.add(vo);
-
             }
 
         } catch (Exception e){
@@ -272,6 +271,8 @@ public class SearchDAO {
 
         return list;
     }
+
+
 
     public List<RestListVO> weeklyTop3Rest(){
         List<RestListVO> list = new ArrayList<>();
@@ -335,6 +336,101 @@ public class SearchDAO {
     public List<ReviewVO> weeklyTop3Review(){
         List<ReviewVO> list = new ArrayList<>();
         String sql = "SELECT * FROM ( SELECT R.REVIEW_ID, R2.RESTAURANT_NAME, R.REVIEW_TITLE , R.REVIEW_CONTENT , R.RATING , COUNT(rl.MEMBER_ID) FROM REVIEW R LEFT JOIN REVIEW_LIKE RL ON r.REVIEW_ID = rl.REVIEW_ID JOIN RESTAURANT r2 ON R.RESTAURANT_ID = R2.RESTAURANT_ID GROUP BY  R.REVIEW_ID, R2.RESTAURANT_NAME, R.REVIEW_TITLE , R.REVIEW_CONTENT , R.RATING ORDER BY R.RATING DESC) WHERE ROWNUM <= 3";
+
+        try{
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            rs = pStmt.executeQuery();
+
+            while(rs.next()){
+                int reviewId = rs.getInt("REVIEW_ID");
+                String name = rs.getString("RESTAURANT_NAME");
+                String title = rs.getString("REVIEW_TITLE");
+                String content = rs.getString("REVIEW_CONTENT");
+                double rating = rs.getDouble("RATING");
+
+                ReviewVO vo = new ReviewVO();
+                vo.setReviewId(reviewId);
+                vo.setRestName(name);
+                vo.setReviewTitle(title);
+                vo.setReviewContent(content);
+                vo.setRating(rating);
+                list.add(vo);
+
+            }
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        Common.close(rs);
+        Common.close(pStmt);
+        Common.close(conn);
+
+        return list;
+
+    }
+
+    public List<RestListVO> carouselPopularList(){
+        List<RestListVO> list = new ArrayList<>();
+
+        String sql = "SELECT * FROM (" +
+                "  SELECT R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_CATEGORY, RESTAURANT_PHONE,  RESTAURANT_ADDR, RESERVATION_POSSIBILITY, TRUNC(AVG(RATING),1) AS RATINGS, COUNT(REVIEW_ID) AS REVIEWS" +
+                "  FROM RESTAURANT R" +
+                "  JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID " +
+                "  LEFT JOIN REVIEW RV ON R.RESTAURANT_ID = RV.RESTAURANT_ID" +
+                "  WHERE R.RESTAURANT_ID IN (" +
+                "    SELECT DISTINCT R.RESTAURANT_ID " +
+                "    FROM RESTAURANT R " +
+                "    JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID " +
+                "    JOIN R_MENU RM ON RI.RESTAURANT_ID = RM.RESTAURANT_ID" +
+                "  )" +
+                "  GROUP BY R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_ADDR, RESTAURANT_CATEGORY, RESERVATION_POSSIBILITY, RESTAURANT_PHONE" +
+                "  HAVING TRUNC(AVG(RATING),1) >= 3.0" +
+                "  ORDER BY RATINGS DESC" +
+                ") WHERE ROWNUM <= 6";
+
+        try{
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            rs = pStmt.executeQuery();
+
+            while(rs.next()){
+                String id = rs.getString("RESTAURANT_ID");
+                String name = rs.getString("RESTAURANT_NAME");
+                String category = rs.getString("RESTAURANT_CATEGORY");
+                int reservation = rs.getInt("RESERVATION_POSSIBILITY");
+                String pNum = rs.getString("RESTAURANT_PHONE");
+                String addr = rs.getString("RESTAURANT_ADDR");
+                double rating = rs.getDouble("RATINGS");
+                int reviews = rs.getInt("REVIEWS");
+
+                RestListVO vo = new RestListVO();
+                vo.setRestId(id);
+                vo.setRestName(name);
+                vo.setAddr(addr);
+                vo.setCategory(category);
+                vo.setReservation(reservation);
+                vo.setRestPhone(pNum);
+                vo.setRating(rating);
+                vo.setReviews(reviews);
+                list.add(vo);
+            }
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        Common.close(rs);
+        Common.close(pStmt);
+        Common.close(conn);
+
+        return list;
+    }
+
+    public List<ReviewVO> carouselReviewList(){
+        List<ReviewVO> list = new ArrayList<>();
+        String sql = "SELECT * FROM ( SELECT R.REVIEW_ID, R2.RESTAURANT_NAME, R.REVIEW_TITLE , R.REVIEW_CONTENT , R.RATING , COUNT(rl.MEMBER_ID) FROM REVIEW R LEFT JOIN REVIEW_LIKE RL ON r.REVIEW_ID = rl.REVIEW_ID JOIN RESTAURANT r2 ON R.RESTAURANT_ID = R2.RESTAURANT_ID GROUP BY  R.REVIEW_ID, R2.RESTAURANT_NAME, R.REVIEW_TITLE , R.REVIEW_CONTENT , R.RATING ORDER BY COUNT(rl.MEMBER_ID) DESC) WHERE ROWNUM <= 9";
 
         try{
             conn = Common.getConnection();

@@ -38,13 +38,29 @@ public class SearchController {
 
     @GetMapping("/weeklyTop3Rest")
     public ResponseEntity<List<RestListVO>> weeklyTop3Rest(){
+        System.out.println("주간 탑3 레스토랑 리스트 컨트롤러");
         List<RestListVO> list = dao.weeklyTop3Rest();
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
-    @GetMapping("weeklyTop3Review")
+    @GetMapping("/weeklyTop3Review")
     public ResponseEntity<List<ReviewVO>> weeklyTop3Review(){
+        System.out.println("주간 탑3 리뷰 리스트 컨트롤러");
         List<ReviewVO> list = dao.weeklyTop3Review();
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @GetMapping("/carouselPopularList")
+    public ResponseEntity<List<RestListVO>> carouselPopularList(){
+        System.out.println("인기매장 리스트 캐러셀 컨트롤러 작동");
+        List<RestListVO> list = dao.carouselPopularList();
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @GetMapping("/carouselReviewList")
+    public ResponseEntity<List<ReviewVO>> carouselReviewList(){
+        System.out.println("인기리뷰 리스트 캐러셀 컨트롤러 작동");
+        List<ReviewVO> list = dao.carouselReviewList();
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
