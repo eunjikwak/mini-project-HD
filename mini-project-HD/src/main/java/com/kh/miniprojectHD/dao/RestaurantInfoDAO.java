@@ -104,4 +104,27 @@ public class RestaurantInfoDAO {
         return false;
     }
 
+    //매장 정보 등록
+    public Boolean restInfoInsert(RestaurantInfoVO vo) {
+        String sql = " INSERT INTO RESTAURANT_INFO VALUES (?,?,?,?,?,?,?)";
+        try {
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, vo.getRestId());
+            pStmt.setString(2, vo.getRestImgFileName());
+            pStmt.setString(3, vo.getRestPhoneNum());
+            pStmt.setString(4, vo.getRestAddr());
+            pStmt.setString(5, vo.getRestNotice());
+            pStmt.setString(6, vo.getRestHours());
+            pStmt.setString(7, vo.getRestIntro());
+            pStmt.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+        return false;
+    }
+
 }

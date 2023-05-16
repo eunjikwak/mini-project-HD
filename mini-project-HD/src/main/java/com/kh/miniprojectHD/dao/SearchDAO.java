@@ -443,6 +443,7 @@ public class SearchDAO {
                 String title = rs.getString("REVIEW_TITLE");
                 String content = rs.getString("REVIEW_CONTENT");
                 double rating = rs.getDouble("RATING");
+                int likes = rs.getInt("COUNT(rl.MEMBER_ID)");
 
                 ReviewVO vo = new ReviewVO();
                 vo.setReviewId(reviewId);

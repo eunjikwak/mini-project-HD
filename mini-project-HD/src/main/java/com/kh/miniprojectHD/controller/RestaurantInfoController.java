@@ -36,11 +36,19 @@ public class RestaurantInfoController {
         return new ResponseEntity<>(vo, HttpStatus.OK);
     }
 
-    // POST : 매장 상세정보 업데이트(곽은지)
+    // POST : 매장 상세정보 업데이트
     @PostMapping("/business/restInfo/update")
-    public ResponseEntity<Boolean> memberUpdate(@RequestBody Map<String, RestaurantInfoVO> data) {
+    public ResponseEntity<Boolean> restInfoUpdate(@RequestBody Map<String, RestaurantInfoVO> data) {
         RestaurantInfoVO vo = data.get("vo");
         boolean result = dao.restInfoUpdate(vo);
+        return new ResponseEntity<>(result, HttpStatus.OK);
+    }
+
+    // POST : 매장 상세정보 등록
+    @PostMapping("/business/restInfo/insert")
+    public ResponseEntity<Boolean> restInfoInsert(@RequestBody Map<String, RestaurantInfoVO> data) {
+        RestaurantInfoVO vo = data.get("vo");
+        boolean result = dao.restInfoInsert(vo);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 }

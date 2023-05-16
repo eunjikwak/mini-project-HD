@@ -385,4 +385,27 @@ public class MemberDAO {
 
         return nickname;
     }
+
+    //ID로 이름 가져오는 메소드
+    public String memberName(String id){
+        System.out.println("ID로 이름 가져오기");
+        String name = "";
+        try {
+            conn = Common.getConnection();
+            stmt = conn.createStatement();
+            String sql = "SELECT NAME FROM MEMBER_INFO WHERE MEMBER_ID = " + "'" + id +"'";
+            rs = stmt.executeQuery(sql);
+
+            while(rs.next()){
+                name = rs.getString("NAME");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(rs);
+        Common.close(stmt);
+        Common.close(conn);
+
+        return name;
+    }
 }
