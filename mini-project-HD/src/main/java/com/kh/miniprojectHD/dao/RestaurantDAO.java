@@ -124,4 +124,25 @@ public class RestaurantDAO {
         Common.close(conn);
         return false;
     }
+
+    //매장 정보 등록
+    public Boolean restInsert(RestaurantVO vo) {
+        String sql = "INSERT INTO RESTAURANT VALUES (?, ?, ?, SYSDATE, ?, ?)";
+        try {
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setString(1, vo.getRestId());
+            pStmt.setString(2, vo.getMemId());
+            pStmt.setString(3, vo.getRestName());
+            pStmt.setInt(4, vo.getIsAvailable());
+            pStmt.setString(5, vo.getCategory());
+            pStmt.executeUpdate();
+            return true;
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+        return false;
+    }
 }
