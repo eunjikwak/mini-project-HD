@@ -239,7 +239,7 @@ public class EmailService {
     }
 
     // 예약 시 사업자에게 보내는 메시지
-    public MimeMessage reservationBizMessage(String to, String name, String bizMemId, String restName, String date, String reservationId) throws MessagingException, UnsupportedEncodingException {
+    public MimeMessage reservationBizMessage(String to, String name, String bizMemId, String restName, String date) throws MessagingException, UnsupportedEncodingException {
 
         MimeMessage msg = ms.createMimeMessage();
         msg.addRecipients(Message.RecipientType.TO, to); // 보내는 대상
@@ -252,7 +252,7 @@ public class EmailService {
         msgs += "<br>";
         msgs += "<p>" + title + "</p>";
         msgs += "<br>";
-        msgs += "<p> 예약번호 : " + reservationId + "</p>";
+        msgs += "<p> 예약하신 분의 성함 : " + name + "</p>";
         msgs += "<br>";
         msgs += "<p> 요청 날짜와 시간 : " + date + "</p>";
         msgs += "<br>";
@@ -265,7 +265,7 @@ public class EmailService {
         return msg;
     }
     // 예약 변경 시 보내는 메시지
-    public MimeMessage reservationUpdateMessage(String to, String nickname, String restName, String date) throws MessagingException, UnsupportedEncodingException {
+    public MimeMessage reservationUpdateMessage(String to, String nickname, String restName, String date, String time) throws MessagingException, UnsupportedEncodingException {
 
         MimeMessage msg = ms.createMimeMessage();
         msg.addRecipients(Message.RecipientType.TO, to); // 보내는 대상
@@ -278,7 +278,7 @@ public class EmailService {
         msgs += "<br>";
         msgs += "<p>" + title + "</p>";
         msgs += "<br>";
-        msgs += "<p> 변경된 날짜와 시간 : " + date + "</p>";
+        msgs += "<p> 변경된 날짜와 시간 : " + date + " " + time + "</p>";
         msgs += "<br>";
         msgs += "<p> 매장 측에서 예약을 확정하면 다시 알림 메일을 보내드리도록 하겠습니다.</p>";
         msgs += "<br>";
@@ -290,7 +290,7 @@ public class EmailService {
     }
 
     //예약 변경 시 사업자에게 보내는 메시지
-    public MimeMessage reservationBizUpdateMessage(String to, String name, String bizMemId, String restName, String date, String reservationId) throws MessagingException, UnsupportedEncodingException {
+    public MimeMessage reservationBizUpdateMessage(String to, String name, String bizMemId, String restName, String date, String time, String reservationId) throws MessagingException, UnsupportedEncodingException {
 
 
         MimeMessage msg = ms.createMimeMessage();
@@ -306,7 +306,7 @@ public class EmailService {
         msgs += "<br>";
         msgs += "<p> 예약번호 : " + reservationId + "</p>";
         msgs += "<br>";
-        msgs += "<p> 변경된 날짜와 시간 : " + date + "</p>";
+        msgs += "<p> 변경된 날짜와 시간 : " + date + " " + time + "</p>";
         msgs += "<br>";
         msgs += "<p> 저희 허당 페이지에서 변경 된 상세 내용을 확인해주시고, 예약을 확정해주시기를 바랍니다.</p>";
         msgs += "<br>";
@@ -371,7 +371,7 @@ public class EmailService {
     }
 
     // 예약 취소 시 보내는 메시지
-    public MimeMessage reservationCancelMessage(String to, String nickname, String restName, String date) throws MessagingException, UnsupportedEncodingException {
+    public MimeMessage reservationCancelMessage(String to, String nickname, String restName, String date, String time) throws MessagingException, UnsupportedEncodingException {
 
         MimeMessage msg = ms.createMimeMessage();
         msg.addRecipients(Message.RecipientType.TO, to); // 보내는 대상
@@ -384,7 +384,7 @@ public class EmailService {
         msgs += "<br>";
         msgs += "<p>" + title + "</p>";
         msgs += "<br>";
-        msgs += "<p> 취소된 날짜와 시간 : " + date + "</p>";
+        msgs += "<p> 취소된 날짜와 시간 : " + date +" "+ time + "</p>";
         msgs += "<br>";
         msgs += "<p>감사합니다.</p>";
         msg.setText(msgs, "utf-8", "html");// 내용, charset 타입, subtype
@@ -394,7 +394,7 @@ public class EmailService {
     }
 
     //예약 취소 시 사업자에게 보내는 메시지
-    public MimeMessage reservationBizCancelMessage(String to, String name, String bizMemId, String restName, String date, String reservationId) throws MessagingException, UnsupportedEncodingException {
+    public MimeMessage reservationBizCancelMessage(String to, String name, String bizMemId, String restName, String date, String time, String reservationId) throws MessagingException, UnsupportedEncodingException {
 
 
         MimeMessage msg = ms.createMimeMessage();
@@ -410,7 +410,7 @@ public class EmailService {
         msgs += "<br>";
         msgs += "<p> 예약번호 : " + reservationId + "</p>";
         msgs += "<br>";
-        msgs += "<p> 요청 날짜와 시간 : " + date + "</p>";
+        msgs += "<p> 요청 날짜와 시간 : " + date + " " + time +"</p>";
         msgs += "<br>";
         msgs += "<p> 저희 허당 페이지에서 상세 내용을 확인해주시길 바랍니다.</p>";
         msgs += "<br>";
@@ -622,8 +622,8 @@ public class EmailService {
     }
 
     //예약 요청 시 사업자회원에게 메일 발송
-    public Boolean reservationSendBizMessage(String to, String name, String bizMemId, String restName, String date, String reservationId) throws Exception{
-        MimeMessage msg = reservationBizMessage(to, name, bizMemId, restName, date, reservationId);
+    public Boolean reservationSendBizMessage(String to, String name, String bizMemId, String restName, String date) throws Exception{
+        MimeMessage msg = reservationBizMessage(to, name, bizMemId, restName, date);
         try{
             ms.send(msg);
             return true;
@@ -635,8 +635,8 @@ public class EmailService {
     }
 
     //예약 변경 시 회원에게 메일 발송
-    public Boolean reservationSendUpdateMessage(String to, String nickname, String restName, String date) throws Exception{
-        MimeMessage msg = reservationUpdateMessage(to, nickname, restName, date);
+    public Boolean reservationSendUpdateMessage(String to, String nickname, String restName, String date, String time) throws Exception{
+        MimeMessage msg = reservationUpdateMessage(to, nickname, restName, date, time);
         try{
             ms.send(msg);
             return true;
@@ -648,8 +648,8 @@ public class EmailService {
     }
 
     //예약 변경 시 사업자회원에게 메일 발송
-    public Boolean reservationSendBizUpdateMessage(String to, String name, String bizMemId, String restName, String date, String reservationId) throws Exception{
-        MimeMessage msg = reservationBizUpdateMessage(to, name, bizMemId, restName, date, reservationId);
+    public Boolean reservationSendBizUpdateMessage(String to, String name, String bizMemId, String restName, String date, String time, String reservationId) throws Exception{
+        MimeMessage msg = reservationBizUpdateMessage(to, name, bizMemId, restName, date, time, reservationId);
         try{
             ms.send(msg);
             return true;
@@ -686,8 +686,8 @@ public class EmailService {
     }
 
     //예약 취소 시 회원에게 메일 발송
-    public Boolean reservationSendCancelMessage(String to, String nickname, String restName, String date) throws Exception{
-        MimeMessage msg = reservationCancelMessage(to, nickname, restName, date);
+    public Boolean reservationSendCancelMessage(String to, String nickname, String restName,  String date, String time) throws Exception{
+        MimeMessage msg = reservationCancelMessage(to, nickname, restName, date, time);
         try{
             ms.send(msg);
             return true;
@@ -699,8 +699,8 @@ public class EmailService {
     }
 
     //예약 취소 시 사업자회원에게 메일 발송
-    public Boolean reservationSendBizCancelMessage(String to, String name, String bizMemId, String restName, String date, String reservationId) throws Exception{
-        MimeMessage msg = reservationBizCancelMessage(to, name, bizMemId, restName, date, reservationId);
+    public Boolean reservationSendBizCancelMessage(String to, String name, String bizMemId, String restName, String date, String time, String reservationId) throws Exception{
+        MimeMessage msg = reservationBizCancelMessage(to, name, bizMemId, restName, date, time, reservationId);
         try{
             ms.send(msg);
             return true;

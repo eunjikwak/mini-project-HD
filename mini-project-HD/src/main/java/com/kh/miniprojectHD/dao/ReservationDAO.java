@@ -190,5 +190,30 @@ public class ReservationDAO {
         return false;
 
     }
+
+    public String resvId(String memId, String restId, String date){
+        System.out.println("예약번호 조회 컨트롤러");
+        String resvId = "";
+
+        try {
+            conn = Common.getConnection();
+            stmt = conn.createStatement();
+            String sql = "SELECT RESERVATION_ID FROM RESERVATION WHERE MEMBER_ID = '"+ memId +"' AND RESTAURANT_ID = '"+restId+"' AND TO_CHAR(RESERVATION_DATE, 'YYYY-MM-DD') = '" + date + "'";
+            rs = stmt.executeQuery(sql);
+
+            while(rs.next()){
+                resvId = rs.getString("RESERVATION_ID");
+            }
+        } catch(Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(rs);
+        Common.close(stmt);
+        Common.close(conn);
+
+        System.out.println(memId + restId + date + resvId);
+
+        return resvId;
+    }
 }
 

@@ -3,6 +3,7 @@ package com.kh.miniprojectHD.controller;
 import com.kh.miniprojectHD.EmailService;
 import com.kh.miniprojectHD.dao.BizMemberDAO;
 import com.kh.miniprojectHD.dao.MemberDAO;
+import com.kh.miniprojectHD.dao.ReservationDAO;
 import com.kh.miniprojectHD.dao.RestaurantDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -141,15 +142,17 @@ public class EmailController {
     public ResponseEntity<Boolean> mailSendMemberReservationUpdate(@RequestBody Map<String, String> object) throws Exception {
         System.out.println("회원에게 예약변경 이메일 전송 컨트롤러 작동");
         String restId = object.get("restId");
+        String restName = object.get("restName");
         String memId = object.get("memberId");
         String date = object.get("resDate");
+        String time = object.get("resTime");
         MemberDAO dao = new MemberDAO();
         String memberNickname = dao.memberNickname(memId);
         String memberEmail = dao.memberEmail(memId);
-        RestaurantDAO rDao = new RestaurantDAO();
-        String restName = rDao.restName(restId);
+//        RestaurantDAO rDao = new RestaurantDAO();
+//        String restName = rDao.restName(restId);
 
-        Boolean result = es.reservationSendUpdateMessage(memberEmail, memberNickname, restName, date);
+        Boolean result = es.reservationSendUpdateMessage(memberEmail, memberNickname, restName, date, time);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -173,15 +176,17 @@ public class EmailController {
     public ResponseEntity<Boolean> mailSendMemberReservationCancel(@RequestBody Map<String, String> object) throws Exception {
         System.out.println("회원에게 예약취소 이메일 전송 컨트롤러 작동");
         String restId = object.get("restId");
+        String restName = object.get("restName");
         String memId = object.get("memberId");
         String date = object.get("resDate");
+        String time = object.get("resTime");
         MemberDAO dao = new MemberDAO();
         String memberNickname = dao.memberNickname(memId);
         String memberEmail = dao.memberEmail(memId);
-        RestaurantDAO rDao = new RestaurantDAO();
-        String restName = rDao.restName(restId);
+//        RestaurantDAO rDao = new RestaurantDAO();
+//        String restName = rDao.restName(restId);
 
-        Boolean result = es.reservationSendCancelMessage(memberEmail, memberNickname, restName, date);
+        Boolean result = es.reservationSendCancelMessage(memberEmail, memberNickname, restName, date, time);
         return new ResponseEntity<>(result, HttpStatus.OK);
     }
 
@@ -209,7 +214,6 @@ public class EmailController {
         String restId = object.get("restId");
         String memId = object.get("memberId");
         String date = object.get("resDate");
-        String reservationId = object.get("resvId");
         MemberDAO dao = new MemberDAO();
         String memberName = dao.memberName(memId);
 
@@ -220,8 +224,7 @@ public class EmailController {
         String bizMemId = bDao.bizMemberId(restId);
         String bizMemEmail = bDao.bizMemberEmail(bizMemId);
 
-
-        Boolean result = es.reservationSendBizMessage(bizMemEmail, memberName, bizMemId, restName, date, reservationId);
+        Boolean result = es.reservationSendBizMessage(bizMemEmail, memberName, bizMemId, restName, date);
         return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
@@ -230,21 +233,22 @@ public class EmailController {
     public ResponseEntity<Boolean> mailSendBizMemberReservationUpdate(@RequestBody Map<String, String> object) throws Exception {
         System.out.println("사업자 회원에게 예약변경 알림 컨트롤러 작동");
         String restId = object.get("restId");
+        String restName = object.get("restName");
         String memId = object.get("memberId");
         String date = object.get("resDate");
+        String time = object.get("resTime");
         String reservationId = object.get("resvId");
         MemberDAO dao = new MemberDAO();
         String memberName = dao.memberName(memId);
 
-        RestaurantDAO rDao = new RestaurantDAO();
-        String restName = rDao.restName(restId);
+//        RestaurantDAO rDao = new RestaurantDAO();
+//        String restName = rDao.restName(restId);
 
         BizMemberDAO bDao = new BizMemberDAO();
         String bizMemId = bDao.bizMemberId(restId);
         String bizMemEmail = bDao.bizMemberEmail(bizMemId);
 
-
-        Boolean result = es.reservationSendBizUpdateMessage(bizMemEmail, memberName, bizMemId, restName, date, reservationId);
+        Boolean result = es.reservationSendBizUpdateMessage(bizMemEmail, memberName, bizMemId, restName, date, time,reservationId);
         return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
@@ -276,21 +280,20 @@ public class EmailController {
     public ResponseEntity<Boolean> mailSendBizMemberReservationCancel(@RequestBody Map<String, String> object) throws Exception {
         System.out.println("사업자 회원에게 예약취소 알림 컨트롤러 작동");
         String restId = object.get("restId");
+        String restName = object.get("restName");
         String memId = object.get("memberId");
         String date = object.get("resDate");
+        String time = object.get("resTime");
         String reservationId = object.get("resvId");
         MemberDAO dao = new MemberDAO();
         String memberName = dao.memberName(memId);
-
-        RestaurantDAO rDao = new RestaurantDAO();
-        String restName = rDao.restName(restId);
 
         BizMemberDAO bDao = new BizMemberDAO();
         String bizMemId = bDao.bizMemberId(restId);
         String bizMemEmail = bDao.bizMemberEmail(bizMemId);
 
 
-        Boolean result = es.reservationSendBizCancelMessage(bizMemEmail, memberName, bizMemId, restName, date, reservationId);
+        Boolean result = es.reservationSendBizCancelMessage(bizMemEmail, memberName, bizMemId, restName, date, time,reservationId);
         return new ResponseEntity<>(result, HttpStatus.OK);
 
     }
