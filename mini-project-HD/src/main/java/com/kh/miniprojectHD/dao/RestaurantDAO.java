@@ -50,7 +50,7 @@ public class RestaurantDAO {
     public List<RestJoinVO> rtSelect(RestaurantVO restaurantVO){
         List<RestJoinVO> list = new ArrayList<>();
         try{
-            String sql = "SELECT RESTAURANT_NAME,RESTAURANT_PHONE,RESTAURANT_ADDR,TRUNC(AVG(RATING),1) FROM RESTAURANT JOIN RESTAURANT_INFO ON RESTAURANT.RESTAURANT_ID = RESTAURANT_INFO.RESTAURANT_ID LEFT JOIN REVIEW ON RESTAURANT.RESTAURANT_ID = REVIEW.RESTAURANT_ID WHERE RESTAURANT.RESTAURANT_ID =? GROUP BY RESTAURANT_NAME,RESTAURANT_PHONE,RESTAURANT_ADDR";
+            String sql = "SELECT RESTAURANT_NAME,RESTAURANT_PHONE,RESTAURANT_ADDR,TRUNC(AVG(RATING),1),RESTAURANT_IMAGE_FILE_NAME FROM RESTAURANT JOIN RESTAURANT_INFO ON RESTAURANT.RESTAURANT_ID = RESTAURANT_INFO.RESTAURANT_ID LEFT JOIN REVIEW ON RESTAURANT.RESTAURANT_ID = REVIEW.RESTAURANT_ID WHERE RESTAURANT.RESTAURANT_ID =? GROUP BY RESTAURANT_NAME,RESTAURANT_PHONE,RESTAURANT_ADDR,RESTAURANT_IMAGE_FILE_NAME";
             conn = Common.getConnection();
             pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, restaurantVO.getRestId());
@@ -60,11 +60,13 @@ public class RestaurantDAO {
                 String phone = rs.getString("RESTAURANT_PHONE");
                 String addr = rs.getString("RESTAURANT_ADDR");
                 double avgRating = rs.getDouble("TRUNC(AVG(RATING),1)");
+                String image = rs.getString("RESTAURANT_IMAGE_FILE_NAME");
                 RestJoinVO vo = new RestJoinVO();
                 vo.setName(name);
                 vo.setPhone(phone);
                 vo.setAddr(addr);
                 vo.setAvgRating(avgRating);
+                vo.setImage(image);
                 list.add(vo);
             }
             Common.close(rs);

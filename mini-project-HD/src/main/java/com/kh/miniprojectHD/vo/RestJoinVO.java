@@ -13,4 +13,5 @@ public class RestJoinVO {
     private String addr;
     private double avgRating;
     private int reviewCount;
+    private String image;
 }
