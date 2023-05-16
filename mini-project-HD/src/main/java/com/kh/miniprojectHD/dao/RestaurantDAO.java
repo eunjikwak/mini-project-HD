@@ -145,4 +145,26 @@ public class RestaurantDAO {
         Common.close(conn);
         return false;
     }
+
+    public String restName(String id){
+        System.out.println("레스토랑 아이디로 매장명 찾기");
+        String restName = "";
+        try {
+            conn = Common.getConnection(); //연결
+            stmt = conn.createStatement(); //정적인 sql 사용
+            String sql= "SELECT RESTAURANT_NAME FROM RESTAURANT WHERE RESTAURANT_ID = '"+id+"'";
+            rs = stmt.executeQuery(sql); //
+            while(rs.next()){ //읽을 행이 있으면 참
+                restName = rs.getString("RESTAURANT_NAME");
+            }
+            Common.close(rs); // 연결과 역순으로 해제
+            Common.close(stmt);
+            Common.close(conn);
+        }catch(Exception e){
+            e.printStackTrace();
+
+        }
+        return restName;
+    }
+
 }
