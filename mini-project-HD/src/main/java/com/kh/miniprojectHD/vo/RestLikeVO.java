@@ -12,4 +12,5 @@ public class RestLikeVO {
     private String memId;
     private String restName;
     private double restRating;
+    private int reservation;
 }

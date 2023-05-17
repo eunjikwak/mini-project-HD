@@ -131,7 +131,7 @@ public class ReviewDAO {
         List<ReviewJoinVO> list = new ArrayList<>();
 
         try{
-            String sql ="SELECT M.NICKNAME,M.MEMBER_ID,R.REVIEW_ID,R.REVIEW_TITLE,R.REVIEW_CONTENT,R.RATING,R.REVIEW_DATE,COUNT(L.REVIEW_ID),REVIEW_IMAGE_FILE_NAME, RESTAURANT_ID FROM REVIEW R JOIN MEMBER_INFO M ON R.MEMBER_ID = M.MEMBER_ID LEFT JOIN REVIEW_LIKE L ON R.REVIEW_ID = L.REVIEW_ID WHERE R.REVIEW_ID = ? GROUP BY M.NICKNAME,M.MEMBER_ID, R.REVIEW_ID, R.REVIEW_TITLE, R.REVIEW_CONTENT, R.RATING, R.REVIEW_DATE,REVIEW_IMAGE_FILE_NAME,RESTAURANT_ID";
+            String sql ="SELECT M.NICKNAME,M.MEMBER_ID,R.REVIEW_ID,R.REVIEW_TITLE,R.REVIEW_CONTENT,R.RATING,R.REVIEW_DATE,COUNT(L.REVIEW_ID),REVIEW_IMAGE_FILE_NAME,R.RESTAURANT_ID,RESERVATION_POSSIBILITY FROM REVIEW R JOIN MEMBER_INFO M ON R.MEMBER_ID = M.MEMBER_ID JOIN RESTAURANT REST ON REST.RESTAURANT_ID= R.RESTAURANT_ID LEFT JOIN REVIEW_LIKE L ON R.REVIEW_ID = L.REVIEW_ID WHERE R.REVIEW_ID = ? GROUP BY M.NICKNAME,M.MEMBER_ID, R.REVIEW_ID, R.REVIEW_TITLE, R.REVIEW_CONTENT, R.RATING, R.REVIEW_DATE,REVIEW_IMAGE_FILE_NAME,R.RESTAURANT_ID,RESERVATION_POSSIBILITY";
             conn = Common.getConnection();
             pStmt = conn.prepareStatement(sql);
             pStmt.setInt(1, reviewVO.getReviewId());
@@ -147,6 +147,7 @@ public class ReviewDAO {
                 int likeCnt = rs.getInt("COUNT(L.REVIEW_ID)");
                 String image = rs.getString("REVIEW_IMAGE_FILE_NAME");
                 String restId = rs.getString("RESTAURANT_ID");
+                int res = rs.getInt("RESERVATION_POSSIBILITY");
 
                 ReviewJoinVO vo = new ReviewJoinVO();
                 vo.setNickName(nickName);
@@ -159,6 +160,7 @@ public class ReviewDAO {
                 vo.setLikeCnt(likeCnt);
                 vo.setReviewImage(image);
                 vo.setRestId(restId);
+                vo.setReservation(res);
                 list.add(vo);
             }
             Common.close(rs);

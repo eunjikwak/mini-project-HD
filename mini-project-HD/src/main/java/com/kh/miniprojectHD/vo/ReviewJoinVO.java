@@ -18,4 +18,5 @@ public class ReviewJoinVO {
     private Date reviewDate;
     private double reviewRating;
     private int likeCnt;
+    private int reservation;
 }
