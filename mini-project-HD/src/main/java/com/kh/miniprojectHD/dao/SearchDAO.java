@@ -23,7 +23,7 @@ public class SearchDAO {
 
     public List<RestListVO> searchAndFilter(String[] kw, Map<String, String[]> region, String[] cat, String[] price, String rat){
         List<RestListVO> list = new ArrayList<>();
-        String sql = "SELECT R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_CATEGORY , RESTAURANT_PHONE, RESTAURANT_ADDR, RESERVATION_POSSIBILITY ,TRUNC(AVG(RATING),1) AS RATINGS, COUNT(REVIEW_ID) AS REVIEWS" +
+        String sql = "SELECT R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_CATEGORY , RESTAURANT_PHONE, RESTAURANT_ADDR, RESERVATION_POSSIBILITY ,TRUNC(AVG(RATING),1) AS RATINGS, COUNT(REVIEW_ID) AS REVIEWS,RESTAURANT_IMAGE_FILE_NAME" +
                 " FROM RESTAURANT R JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID" +
                 " LEFT JOIN REVIEW RV ON R.RESTAURANT_ID = RV.RESTAURANT_ID" +
                 " WHERE R.RESTAURANT_ID IN (SELECT DISTINCT R.RESTAURANT_ID FROM RESTAURANT R" +
@@ -164,7 +164,7 @@ public class SearchDAO {
             }
         }
 
-        sql = sql + ") GROUP BY R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_ADDR, RESTAURANT_CATEGORY, RESERVATION_POSSIBILITY, RESTAURANT_PHONE";
+        sql = sql + ") GROUP BY R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_ADDR, RESTAURANT_CATEGORY, RESERVATION_POSSIBILITY, RESTAURANT_PHONE,RESTAURANT_IMAGE_FILE_NAME";
 
         if(rat != null){
 
@@ -196,7 +196,7 @@ public class SearchDAO {
                 String addr = rs.getString("RESTAURANT_ADDR");
                 double rating = rs.getDouble("RATINGS");
                 int reviews = rs.getInt("REVIEWS");
-
+                String image =rs.getString("RESTAURANT_IMAGE_FILE_NAME");
                 RestListVO vo = new RestListVO();
                 vo.setRestId(id);
                 vo.setRestName(name);
@@ -206,6 +206,7 @@ public class SearchDAO {
                 vo.setRestPhone(pNum);
                 vo.setRating(rating);
                 vo.setReviews(reviews);
+                vo.setImageUrl(image);
                 list.add(vo);
 
             }
