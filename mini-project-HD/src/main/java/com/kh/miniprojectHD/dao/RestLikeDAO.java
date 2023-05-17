@@ -22,12 +22,12 @@ public class RestLikeDAO {
         try {
             conn = Common.getConnection(); //연결
             stmt = conn.createStatement();
-            String sql = "SELECT RL.RESTAURANT_ID, RL.RESTAURANT_NAME, RL.MEMBER_ID, TRUNC(AVG(REVIEW.RATING), 1) AS RATING "
+            String sql = "SELECT RL.RESTAURANT_ID, R.RESTAURANT_NAME, RL.MEMBER_ID, TRUNC(AVG(REVIEW.RATING), 1) AS RATING "
                     + "FROM RESTAURANT R "
                     + "JOIN RESTAURANT_LIKE RL ON R.RESTAURANT_ID = RL.RESTAURANT_ID "
                     + "LEFT JOIN REVIEW ON R.RESTAURANT_ID = REVIEW.RESTAURANT_ID "
                     + "WHERE R.RESTAURANT_ID = RL.RESTAURANT_ID AND RL.MEMBER_ID = '" + id + "' "
-                    + "GROUP BY RL.RESTAURANT_ID, RL.RESTAURANT_NAME, RL.MEMBER_ID ";
+                    + "GROUP BY RL.RESTAURANT_ID, R.RESTAURANT_NAME, RL.MEMBER_ID ";
 
             rs = stmt.executeQuery(sql); //
             while(rs.next()){ //읽을 행이 있으면 참
