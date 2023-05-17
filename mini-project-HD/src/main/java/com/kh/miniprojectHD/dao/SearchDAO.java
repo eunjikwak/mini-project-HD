@@ -423,7 +423,7 @@ public class SearchDAO {
 
     public List<ReviewVO> weeklyTop3Review(){
         List<ReviewVO> list = new ArrayList<>();
-        String sql = "SELECT * FROM ( SELECT R.REVIEW_ID, R2.RESTAURANT_NAME, R.REVIEW_TITLE , R.REVIEW_CONTENT , R.RATING , COUNT(rl.MEMBER_ID) FROM REVIEW R LEFT JOIN REVIEW_LIKE RL ON r.REVIEW_ID = rl.REVIEW_ID JOIN RESTAURANT r2 ON R.RESTAURANT_ID = R2.RESTAURANT_ID GROUP BY  R.REVIEW_ID, R2.RESTAURANT_NAME, R.REVIEW_TITLE , R.REVIEW_CONTENT , R.RATING ORDER BY R.RATING DESC) WHERE ROWNUM <= 3";
+        String sql = "SELECT * FROM ( SELECT R.REVIEW_ID, R2.RESTAURANT_NAME, R.REVIEW_TITLE , R.REVIEW_CONTENT , R.RATING , COUNT(rl.MEMBER_ID), REVIEW_IMAGE_FILE_NAME FROM REVIEW R LEFT JOIN REVIEW_LIKE RL ON r.REVIEW_ID = rl.REVIEW_ID JOIN RESTAURANT r2 ON R.RESTAURANT_ID = R2.RESTAURANT_ID GROUP BY  R.REVIEW_ID, R2.RESTAURANT_NAME, R.REVIEW_TITLE , R.REVIEW_CONTENT , R.RATING, REVIEW_IMAGE_FILE_NAME  ORDER BY COUNT(rl.MEMBER_ID) DESC) WHERE ROWNUM <= 3";
 
         try{
             conn = Common.getConnection();
@@ -436,6 +436,8 @@ public class SearchDAO {
                 String title = rs.getString("REVIEW_TITLE");
                 String content = rs.getString("REVIEW_CONTENT");
                 double rating = rs.getDouble("RATING");
+                int likes = rs.getInt("COUNT(rl.MEMBER_ID)");
+                String imgUrl = rs.getString("REVIEW_IMAGE_FILE_NAME");
 
                 ReviewVO vo = new ReviewVO();
                 vo.setReviewId(reviewId);
@@ -443,8 +445,9 @@ public class SearchDAO {
                 vo.setReviewTitle(title);
                 vo.setReviewContent(content);
                 vo.setRating(rating);
+                vo.setLikes(likes);
+                vo.setReviewFileName(imgUrl);
                 list.add(vo);
-
             }
 
         } catch (Exception e){
@@ -522,7 +525,7 @@ public class SearchDAO {
 
     public List<ReviewVO> carouselReviewList(){
         List<ReviewVO> list = new ArrayList<>();
-        String sql = "SELECT * FROM ( SELECT R.REVIEW_ID, R2.RESTAURANT_NAME, R.REVIEW_TITLE , R.REVIEW_CONTENT , R.RATING , COUNT(rl.MEMBER_ID) FROM REVIEW R LEFT JOIN REVIEW_LIKE RL ON r.REVIEW_ID = rl.REVIEW_ID JOIN RESTAURANT r2 ON R.RESTAURANT_ID = R2.RESTAURANT_ID GROUP BY  R.REVIEW_ID, R2.RESTAURANT_NAME, R.REVIEW_TITLE , R.REVIEW_CONTENT , R.RATING ORDER BY COUNT(rl.MEMBER_ID) DESC) WHERE ROWNUM <= 9";
+        String sql = "SELECT * FROM ( SELECT R.REVIEW_ID, R2.RESTAURANT_NAME, R.REVIEW_TITLE , R.REVIEW_CONTENT , R.RATING , COUNT(rl.MEMBER_ID), REVIEW_IMAGE_FILE_NAME FROM REVIEW R LEFT JOIN REVIEW_LIKE RL ON r.REVIEW_ID = rl.REVIEW_ID JOIN RESTAURANT r2 ON R.RESTAURANT_ID = R2.RESTAURANT_ID GROUP BY  R.REVIEW_ID, R2.RESTAURANT_NAME, R.REVIEW_TITLE , R.REVIEW_CONTENT , R.RATING, REVIEW_IMAGE_FILE_NAME  ORDER BY COUNT(rl.MEMBER_ID) DESC) WHERE ROWNUM <= 9";
 
         try{
             conn = Common.getConnection();
@@ -536,6 +539,7 @@ public class SearchDAO {
                 String content = rs.getString("REVIEW_CONTENT");
                 double rating = rs.getDouble("RATING");
                 int likes = rs.getInt("COUNT(rl.MEMBER_ID)");
+                String imgUrl = rs.getString("REVIEW_IMAGE_FILE_NAME");
 
                 ReviewVO vo = new ReviewVO();
                 vo.setReviewId(reviewId);
@@ -543,6 +547,8 @@ public class SearchDAO {
                 vo.setReviewTitle(title);
                 vo.setReviewContent(content);
                 vo.setRating(rating);
+                vo.setLikes(likes);
+                vo.setReviewFileName(imgUrl);
                 list.add(vo);
 
             }
