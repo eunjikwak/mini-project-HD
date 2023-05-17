@@ -159,9 +159,10 @@ public class ReservationDAO {
             for (ReservationVO resv : vo) {
                 pStmt.setString(1,"예약확정");
                 pStmt.setInt(2, resv.getResvId());
+                pStmt.executeUpdate();
             }
 
-            pStmt.executeUpdate();
+
             return true;
         } catch (Exception e) {
             e.printStackTrace();
