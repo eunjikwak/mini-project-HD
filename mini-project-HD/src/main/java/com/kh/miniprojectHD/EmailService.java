@@ -422,7 +422,7 @@ public class EmailService {
     }
 
     // 사업자 측에서 예약 요청 거부 시 보내는 메시지
-    public MimeMessage reservationRejectMessage(String to, String nickname, String restName, String date) throws MessagingException, UnsupportedEncodingException {
+    public MimeMessage reservationRejectMessage(String to, String nickname, String restName, String date, String reason) throws MessagingException, UnsupportedEncodingException {
 
         MimeMessage msg = ms.createMimeMessage();
         msg.addRecipients(Message.RecipientType.TO, to); // 보내는 대상
@@ -439,6 +439,8 @@ public class EmailService {
         msgs += "<br>";
         msgs += "<p> 매장 측의 사정으로 인해 예약을 받기가 힘들어, 요청이 거절되었습니다. </p>";
         msgs += "<br>";
+        msgs += "<p> 거절 사유 : " + reason + "</p>";
+        msgs += "<br>";
         msgs += "<p>감사합니다.</p>";
         msg.setText(msgs, "utf-8", "html");// 내용, charset 타입, subtype
         // 보내는 사람의 이메일 주소, 보내는 사람 이름
@@ -447,7 +449,7 @@ public class EmailService {
     }
 
     // 사업자 측에서 예약 요청 거부 시 사업자에게 보내는 메시지
-    public MimeMessage reservationBizRejectMessage(String to, String name, String bizMemId, String restName, String date, String reservationId) throws MessagingException, UnsupportedEncodingException {
+    public MimeMessage reservationBizRejectMessage(String to, String name, String bizMemId, String restName, String date, String reservationId, String reason) throws MessagingException, UnsupportedEncodingException {
 
 
         MimeMessage msg = ms.createMimeMessage();
@@ -464,6 +466,8 @@ public class EmailService {
         msgs += "<p> 예약번호 : " + reservationId + "</p>";
         msgs += "<br>";
         msgs += "<p> 요청 날짜와 시간 : " + date + "</p>";
+        msgs += "<br>";
+        msgs += "<p> 거절 사유 : " + reason + "</p>";
         msgs += "<br>";
         msgs += "<p> 저희 허당 페이지에서 상세 내용을 확인해주시길 바랍니다.</p>";
         msgs += "<br>";
@@ -712,8 +716,8 @@ public class EmailService {
     }
 
     //사업자측에서 예약 요청 거절시 회원에게 메일 발송
-    public Boolean reservationSendRejectMessage(String to, String nickname, String restName, String date) throws Exception{
-        MimeMessage msg = reservationRejectMessage(to, nickname, restName, date);
+    public Boolean reservationSendRejectMessage(String to, String nickname, String restName, String date, String reason) throws Exception{
+        MimeMessage msg = reservationRejectMessage(to, nickname, restName, date, reason);
         try{
             ms.send(msg);
             return true;
@@ -725,8 +729,8 @@ public class EmailService {
     }
 
     //사업자측에서 예약 요청 거절시 사업자 회원에게 메일 발송
-    public Boolean reservationSendBizRejectMessage(String to, String name, String bizMemId, String restName, String date, String reservationId) throws Exception{
-        MimeMessage msg = reservationBizRejectMessage(to, name, bizMemId, restName, date, reservationId);
+    public Boolean reservationSendBizRejectMessage(String to, String name, String bizMemId, String restName, String date, String reservationId, String reason) throws Exception{
+        MimeMessage msg = reservationBizRejectMessage(to, name, bizMemId, restName, date, reservationId, reason);
         try{
             ms.send(msg);
             return true;
