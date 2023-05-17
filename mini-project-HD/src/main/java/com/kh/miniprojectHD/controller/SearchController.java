@@ -32,6 +32,7 @@ public class SearchController {
 
     @GetMapping("/restaurantList")
     public ResponseEntity<List<RestListVO>> popularRest(@RequestParam("popular") String popular){
+        System.out.println("인기매장 리스트 컨트롤러");
         List<RestListVO> list = dao.popularList();
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
@@ -40,6 +41,13 @@ public class SearchController {
     public ResponseEntity<List<RestListVO>> weeklyTop3Rest(){
         System.out.println("주간 탑3 레스토랑 리스트 컨트롤러");
         List<RestListVO> list = dao.weeklyTop3Rest();
+        return new ResponseEntity<>(list, HttpStatus.OK);
+    }
+
+    @GetMapping("/monthlyTop3Rest")
+    public ResponseEntity<List<RestListVO>> monthlyTop3Rest(){
+        System.out.println("월간 탑3 레스토랑 리스트 컨트롤러");
+        List<RestListVO> list = dao.monthlyTop3Rest();
         return new ResponseEntity<>(list, HttpStatus.OK);
     }
 

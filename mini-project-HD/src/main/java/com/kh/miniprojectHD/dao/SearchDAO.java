@@ -225,15 +225,25 @@ public class SearchDAO {
     public List<RestListVO> popularList(){
         List<RestListVO> list = new ArrayList<>();
 
-        String sql = "SELECT R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_CATEGORY , RESTAURANT_PHONE,  RESTAURANT_ADDR, RESERVATION_POSSIBILITY ,TRUNC(AVG(RATING),1) AS RATINGS ,COUNT(REVIEW_ID) AS REVIEWS " +
-                "FROM RESTAURANT R JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID " +
-                "LEFT JOIN REVIEW RV ON R.RESTAURANT_ID = RV.RESTAURANT_ID " +
-                "WHERE R.RESTAURANT_ID IN (SELECT DISTINCT R.RESTAURANT_ID FROM RESTAURANT R " +
-                "JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID " +
-                "JOIN R_MENU RM ON RI.RESTAURANT_ID =RM.RESTAURANT_ID) " +
-                "GROUP BY R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_ADDR, RESTAURANT_CATEGORY, RESERVATION_POSSIBILITY, RESTAURANT_PHONE " +
-                "HAVING COUNT(REVIEW_ID) >= 3 " +
-                "ORDER BY RATINGS DESC";
+        String sql = "SELECT * FROM " +
+                "(SELECT R.RESTAURANT_ID, R.RESTAURANT_NAME, RESTAURANT_CATEGORY, RESTAURANT_PHONE,  RESTAURANT_ADDR, RESERVATION_POSSIBILITY, TRUNC(AVG(RATING),1) AS RATINGS, " +
+                " (SELECT COUNT(*) FROM RESTAURANT_LIKE RL WHERE R.RESTAURANT_ID = RL.RESTAURANT_ID) AS LIKES, " +
+                " RESTAURANT_IMAGE_FILE_NAME" +
+                " FROM RESTAURANT R" +
+                " JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID" +
+                " LEFT JOIN REVIEW RV ON R.RESTAURANT_ID = RV.RESTAURANT_ID" +
+                " JOIN RESTAURANT_LIKE RL ON R.RESTAURANT_ID = RL.RESTAURANT_ID" +
+                " WHERE R.RESTAURANT_ID IN (" +
+                " SELECT DISTINCT R.RESTAURANT_ID " +
+                " FROM RESTAURANT R " +
+                " JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID " +
+                " JOIN R_MENU RM ON RI.RESTAURANT_ID = RM.RESTAURANT_ID" +
+                " JOIN RESTAURANT_LIKE RL ON R.RESTAURANT_ID = RL.RESTAURANT_ID " +
+                " ) " +
+                " GROUP BY R.RESTAURANT_ID, R.RESTAURANT_NAME, RESTAURANT_ADDR, RESTAURANT_CATEGORY, RESERVATION_POSSIBILITY, RESTAURANT_PHONE, RESTAURANT_IMAGE_FILE_NAME\n" +
+                " HAVING TRUNC(AVG(RATING),1) >= 3.0" +
+                " ORDER BY LIKES DESC" +
+                " ) WHERE ROWNUM <= 10";
 
         try{
             conn = Common.getConnection();
@@ -248,7 +258,8 @@ public class SearchDAO {
                 String pNum = rs.getString("RESTAURANT_PHONE");
                 String addr = rs.getString("RESTAURANT_ADDR");
                 double rating = rs.getDouble("RATINGS");
-                int reviews = rs.getInt("REVIEWS");
+                int likes = rs.getInt("LIKES");
+                String image =rs.getString("RESTAURANT_IMAGE_FILE_NAME");
 
                 RestListVO vo = new RestListVO();
                 vo.setRestId(id);
@@ -258,7 +269,8 @@ public class SearchDAO {
                 vo.setReservation(reservation);
                 vo.setRestPhone(pNum);
                 vo.setRating(rating);
-                vo.setReviews(reviews);
+                vo.setLikes(likes);
+                vo.setImageUrl(image);
                 list.add(vo);
             }
 
@@ -278,21 +290,25 @@ public class SearchDAO {
     public List<RestListVO> weeklyTop3Rest(){
         List<RestListVO> list = new ArrayList<>();
 
-        String sql = "SELECT * FROM (" +
-                "  SELECT R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_CATEGORY, RESTAURANT_PHONE,  RESTAURANT_ADDR, RESERVATION_POSSIBILITY, TRUNC(AVG(RATING),1) AS RATINGS, COUNT(REVIEW_ID) AS REVIEWS" +
-                "  FROM RESTAURANT R" +
-                "  JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID " +
-                "  LEFT JOIN REVIEW RV ON R.RESTAURANT_ID = RV.RESTAURANT_ID" +
-                "  WHERE R.RESTAURANT_ID IN (" +
-                "    SELECT DISTINCT R.RESTAURANT_ID " +
-                "    FROM RESTAURANT R " +
-                "    JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID " +
-                "    JOIN R_MENU RM ON RI.RESTAURANT_ID = RM.RESTAURANT_ID" +
-                "  )" +
-                "  GROUP BY R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_ADDR, RESTAURANT_CATEGORY, RESERVATION_POSSIBILITY, RESTAURANT_PHONE" +
-                "  HAVING TRUNC(AVG(RATING),1) >= 3.0" +
-                "  ORDER BY RATINGS DESC" +
-                ") WHERE ROWNUM <= 6";
+        String sql = "SELECT * FROM" +
+                " (SELECT R.RESTAURANT_ID, R.RESTAURANT_NAME, RESTAURANT_CATEGORY, RESTAURANT_PHONE,  RESTAURANT_ADDR, RESERVATION_POSSIBILITY, TRUNC(AVG(RATING),1) AS RATINGS," +
+                " (SELECT COUNT(*) FROM RESTAURANT_LIKE RL WHERE R.RESTAURANT_ID = RL.RESTAURANT_ID) AS LIKES," +
+                " RESTAURANT_IMAGE_FILE_NAME" +
+                " FROM RESTAURANT R" +
+                " JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID" +
+                " LEFT JOIN REVIEW RV ON R.RESTAURANT_ID = RV.RESTAURANT_ID" +
+                " JOIN RESTAURANT_LIKE RL ON R.RESTAURANT_ID = RL.RESTAURANT_ID" +
+                " WHERE R.RESTAURANT_ID IN (" +
+                " SELECT DISTINCT R.RESTAURANT_ID" +
+                " FROM RESTAURANT R" +
+                " JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID" +
+                " JOIN R_MENU RM ON RI.RESTAURANT_ID = RM.RESTAURANT_ID" +
+                " JOIN RESTAURANT_LIKE RL ON R.RESTAURANT_ID = RL.RESTAURANT_ID" +
+                " ) AND RL.LIKE_DATE >= TRUNC(SYSDATE)-7" +
+                " GROUP BY R.RESTAURANT_ID, R.RESTAURANT_NAME, RESTAURANT_ADDR, RESTAURANT_CATEGORY, RESERVATION_POSSIBILITY, RESTAURANT_PHONE, RESTAURANT_IMAGE_FILE_NAME" +
+                " HAVING TRUNC(AVG(RATING),1) >= 3.0" +
+                " ORDER BY LIKES DESC" +
+                " ) WHERE ROWNUM <= 3";
 
         try{
             conn = Common.getConnection();
@@ -307,7 +323,9 @@ public class SearchDAO {
                 String pNum = rs.getString("RESTAURANT_PHONE");
                 String addr = rs.getString("RESTAURANT_ADDR");
                 double rating = rs.getDouble("RATINGS");
-                int reviews = rs.getInt("REVIEWS");
+                int likes = rs.getInt("LIKES");
+                String image =rs.getString("RESTAURANT_IMAGE_FILE_NAME");
+
 
                 RestListVO vo = new RestListVO();
                 vo.setRestId(id);
@@ -317,7 +335,76 @@ public class SearchDAO {
                 vo.setReservation(reservation);
                 vo.setRestPhone(pNum);
                 vo.setRating(rating);
-                vo.setReviews(reviews);
+                vo.setLikes(likes);
+                vo.setImageUrl(image);
+
+                list.add(vo);
+
+            }
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+        Common.close(rs);
+        Common.close(pStmt);
+        Common.close(conn);
+
+        return list;
+
+    }
+
+    public List<RestListVO> monthlyTop3Rest(){
+        List<RestListVO> list = new ArrayList<>();
+
+        String sql = "SELECT * FROM" +
+                " (SELECT R.RESTAURANT_ID, R.RESTAURANT_NAME, RESTAURANT_CATEGORY, RESTAURANT_PHONE,  RESTAURANT_ADDR, RESERVATION_POSSIBILITY, TRUNC(AVG(RATING),1) AS RATINGS," +
+                " (SELECT COUNT(*) FROM RESTAURANT_LIKE RL WHERE R.RESTAURANT_ID = RL.RESTAURANT_ID) AS LIKES," +
+                " RESTAURANT_IMAGE_FILE_NAME" +
+                " FROM RESTAURANT R" +
+                " JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID" +
+                " LEFT JOIN REVIEW RV ON R.RESTAURANT_ID = RV.RESTAURANT_ID" +
+                " JOIN RESTAURANT_LIKE RL ON R.RESTAURANT_ID = RL.RESTAURANT_ID" +
+                " WHERE R.RESTAURANT_ID IN (" +
+                " SELECT DISTINCT R.RESTAURANT_ID" +
+                " FROM RESTAURANT R" +
+                " JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID" +
+                " JOIN R_MENU RM ON RI.RESTAURANT_ID = RM.RESTAURANT_ID" +
+                " JOIN RESTAURANT_LIKE RL ON R.RESTAURANT_ID = RL.RESTAURANT_ID" +
+                " ) AND RL.LIKE_DATE >= TRUNC(SYSDATE)-30" +
+                " GROUP BY R.RESTAURANT_ID, R.RESTAURANT_NAME, RESTAURANT_ADDR, RESTAURANT_CATEGORY, RESERVATION_POSSIBILITY, RESTAURANT_PHONE, RESTAURANT_IMAGE_FILE_NAME" +
+                " HAVING TRUNC(AVG(RATING),1) >= 3.0" +
+                " ORDER BY LIKES DESC" +
+                ") WHERE ROWNUM <= 3";
+
+        try{
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            rs = pStmt.executeQuery();
+
+            while(rs.next()){
+                String id = rs.getString("RESTAURANT_ID");
+                String name = rs.getString("RESTAURANT_NAME");
+                String category = rs.getString("RESTAURANT_CATEGORY");
+                int reservation = rs.getInt("RESERVATION_POSSIBILITY");
+                String pNum = rs.getString("RESTAURANT_PHONE");
+                String addr = rs.getString("RESTAURANT_ADDR");
+                double rating = rs.getDouble("RATINGS");
+                int likes = rs.getInt("LIKES");
+                String image =rs.getString("RESTAURANT_IMAGE_FILE_NAME");
+
+
+                RestListVO vo = new RestListVO();
+                vo.setRestId(id);
+                vo.setRestName(name);
+                vo.setAddr(addr);
+                vo.setCategory(category);
+                vo.setReservation(reservation);
+                vo.setRestPhone(pNum);
+                vo.setRating(rating);
+                vo.setLikes(likes);
+                vo.setImageUrl(image);
+
                 list.add(vo);
 
             }
@@ -375,21 +462,25 @@ public class SearchDAO {
     public List<RestListVO> carouselPopularList(){
         List<RestListVO> list = new ArrayList<>();
 
-        String sql = "SELECT * FROM (" +
-                "  SELECT R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_CATEGORY, RESTAURANT_PHONE,  RESTAURANT_ADDR, RESERVATION_POSSIBILITY, TRUNC(AVG(RATING),1) AS RATINGS, COUNT(REVIEW_ID) AS REVIEWS" +
-                "  FROM RESTAURANT R" +
-                "  JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID " +
-                "  LEFT JOIN REVIEW RV ON R.RESTAURANT_ID = RV.RESTAURANT_ID" +
-                "  WHERE R.RESTAURANT_ID IN (" +
-                "    SELECT DISTINCT R.RESTAURANT_ID " +
-                "    FROM RESTAURANT R " +
-                "    JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID " +
-                "    JOIN R_MENU RM ON RI.RESTAURANT_ID = RM.RESTAURANT_ID" +
-                "  )" +
-                "  GROUP BY R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_ADDR, RESTAURANT_CATEGORY, RESERVATION_POSSIBILITY, RESTAURANT_PHONE" +
-                "  HAVING TRUNC(AVG(RATING),1) >= 3.0" +
-                "  ORDER BY RATINGS DESC" +
-                ") WHERE ROWNUM <= 6";
+        String sql = "SELECT * FROM " +
+                "(SELECT R.RESTAURANT_ID, R.RESTAURANT_NAME, RESTAURANT_CATEGORY, RESTAURANT_PHONE,  RESTAURANT_ADDR, RESERVATION_POSSIBILITY, TRUNC(AVG(RATING),1) AS RATINGS, " +
+                " (SELECT COUNT(*) FROM RESTAURANT_LIKE RL WHERE R.RESTAURANT_ID = RL.RESTAURANT_ID) AS LIKES, " +
+                " RESTAURANT_IMAGE_FILE_NAME" +
+                " FROM RESTAURANT R" +
+                " JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID" +
+                " LEFT JOIN REVIEW RV ON R.RESTAURANT_ID = RV.RESTAURANT_ID" +
+                " JOIN RESTAURANT_LIKE RL ON R.RESTAURANT_ID = RL.RESTAURANT_ID" +
+                " WHERE R.RESTAURANT_ID IN (" +
+                " SELECT DISTINCT R.RESTAURANT_ID " +
+                " FROM RESTAURANT R " +
+                " JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID " +
+                " JOIN R_MENU RM ON RI.RESTAURANT_ID = RM.RESTAURANT_ID" +
+                " JOIN RESTAURANT_LIKE RL ON R.RESTAURANT_ID = RL.RESTAURANT_ID " +
+                " ) " +
+                " GROUP BY R.RESTAURANT_ID, R.RESTAURANT_NAME, RESTAURANT_ADDR, RESTAURANT_CATEGORY, RESERVATION_POSSIBILITY, RESTAURANT_PHONE, RESTAURANT_IMAGE_FILE_NAME\n" +
+                " HAVING TRUNC(AVG(RATING),1) >= 3.0" +
+                " ORDER BY LIKES DESC" +
+                " ) WHERE ROWNUM <= 9";
 
         try{
             conn = Common.getConnection();
@@ -404,7 +495,7 @@ public class SearchDAO {
                 String pNum = rs.getString("RESTAURANT_PHONE");
                 String addr = rs.getString("RESTAURANT_ADDR");
                 double rating = rs.getDouble("RATINGS");
-                int reviews = rs.getInt("REVIEWS");
+                int likes = rs.getInt("LIKES");
 
                 RestListVO vo = new RestListVO();
                 vo.setRestId(id);
@@ -414,7 +505,7 @@ public class SearchDAO {
                 vo.setReservation(reservation);
                 vo.setRestPhone(pNum);
                 vo.setRating(rating);
-                vo.setReviews(reviews);
+                vo.setLikes(likes);
                 list.add(vo);
             }
 
@@ -468,52 +559,7 @@ public class SearchDAO {
 
     }
 
-//    public List<ReviewVO> popularReview(){
-//        List<ReviewVO> list = new ArrayList<>();
-//        String sql = "";
-//
-//        try{
-//            conn = Common.getConnection();
-//            pStmt = conn.prepareStatement(sql);
-//            rs = pStmt.executeQuery();
-//
-//            while(rs.next()){
-//                String rId = rs.getString("RESTAURANT_ID");
-//                String name = rs.getString("RESTAURANT_NAME");
-//                String category = rs.getString("RESTAURANT_CATEGORY");
-//                int reservation = rs.getInt("RESERVATION_POSSIBILITY");
-//                String pNum = rs.getString("RESTAURANT_PHONE");
-//                String addr = rs.getString("RESTAURANT_ADDR");
-//                double rating = rs.getDouble("RATING");
-//                int reviews = rs.getInt("REVIEWS");
-//
-//
-//                ReviewVO vo = new ReviewVO();
-//
-//                vo.setReviewId();
-//                vo.setRestaurantId(rId);
-//                vo.setMemberId();
-//                vo.setReviewTitle();
-//                vo.setReviewContent();
-//                vo.setReviewImage();
-//                vo.setReviewDate();
-//                vo.setReviewImage();
-//
-//                list.add(vo);
-//
-//            }
-//
-//        } catch (Exception e){
-//            e.printStackTrace();
-//        }
-//
-//        Common.close(rs);
-//        Common.close(pStmt);
-//        Common.close(conn);
-//
-//
-//        return list;
-//    }
+
 
 
 }
