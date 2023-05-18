@@ -22,12 +22,13 @@ public class RestLikeDAO {
         try {
             conn = Common.getConnection(); //연결
             stmt = conn.createStatement();
-            String sql = "SELECT RL.RESTAURANT_ID, R.RESTAURANT_NAME, RL.MEMBER_ID, TRUNC(AVG(REVIEW.RATING), 1) AS RATING,RESERVATION_POSSIBILITY  "
+            String sql = "SELECT RL.RESTAURANT_ID, R.RESTAURANT_NAME, RL.MEMBER_ID, TRUNC(AVG(REVIEW.RATING), 1) AS RATING, RESERVATION_POSSIBILITY, RI.RESTAURANT_IMAGE_FILE_NAME "
                     + "FROM RESTAURANT R "
                     + "JOIN RESTAURANT_LIKE RL ON R.RESTAURANT_ID = RL.RESTAURANT_ID "
                     + "LEFT JOIN REVIEW ON R.RESTAURANT_ID = REVIEW.RESTAURANT_ID "
+                    + "LEFT JOIN RESTAURANT_INFO RI ON R.RESTAURANT_ID = RI.RESTAURANT_ID "
                     + "WHERE R.RESTAURANT_ID = RL.RESTAURANT_ID AND RL.MEMBER_ID = '" + id + "' "
-                    + "GROUP BY RL.RESTAURANT_ID, R.RESTAURANT_NAME, RL.MEMBER_ID,RESERVATION_POSSIBILITY ";
+                    + "GROUP BY RL.RESTAURANT_ID, R.RESTAURANT_NAME, RL.MEMBER_ID, RESERVATION_POSSIBILITY, RI.RESTAURANT_IMAGE_FILE_NAME";
 
             rs = stmt.executeQuery(sql); //
             while(rs.next()){ //읽을 행이 있으면 참
@@ -36,8 +37,8 @@ public class RestLikeDAO {
                 String memId = rs.getString("MEMBER_ID");
                 double restRating = rs.getDouble("RATING");
                 int reservation = rs.getInt("RESERVATION_POSSIBILITY");
-
-                RestLikeVO vo = new RestLikeVO(restId,memId,restName,restRating,reservation);
+                String restImgFileName = rs.getString("RESTAURANT_IMAGE_FILE_NAME");
+                RestLikeVO vo = new RestLikeVO(restId,memId,restName,restRating,reservation,restImgFileName);
                 list.add(vo);
 
             }

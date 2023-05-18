@@ -13,4 +13,5 @@ public class RestLikeVO {
     private String restName;
     private double restRating;
     private int reservation;
+    private  String restImgFileName;
 }
