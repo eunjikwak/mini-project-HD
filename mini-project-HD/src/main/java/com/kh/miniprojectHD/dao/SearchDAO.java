@@ -483,7 +483,7 @@ public class SearchDAO {
                 " JOIN R_MENU RM ON RI.RESTAURANT_ID = RM.RESTAURANT_ID" +
                 " JOIN RESTAURANT_LIKE RL ON R.RESTAURANT_ID = RL.RESTAURANT_ID " +
                 " ) " +
-                " GROUP BY R.RESTAURANT_ID, R.RESTAURANT_NAME, RESTAURANT_ADDR, RESTAURANT_CATEGORY, RESERVATION_POSSIBILITY, RESTAURANT_PHONE, RESTAURANT_IMAGE_FILE_NAME\n" +
+                " GROUP BY R.RESTAURANT_ID, R.RESTAURANT_NAME, RESTAURANT_ADDR, RESTAURANT_CATEGORY, RESERVATION_POSSIBILITY, RESTAURANT_PHONE, RESTAURANT_IMAGE_FILE_NAME" +
                 " HAVING TRUNC(AVG(RATING),1) >= 3.0" +
                 " ORDER BY LIKES DESC" +
                 " ) WHERE ROWNUM <= 9";
@@ -502,6 +502,7 @@ public class SearchDAO {
                 String addr = rs.getString("RESTAURANT_ADDR");
                 double rating = rs.getDouble("RATINGS");
                 int likes = rs.getInt("LIKES");
+                String image = rs.getString("RESTAURANT_IMAGE_FILE_NAME");
 
                 RestListVO vo = new RestListVO();
                 vo.setRestId(id);
@@ -512,6 +513,7 @@ public class SearchDAO {
                 vo.setRestPhone(pNum);
                 vo.setRating(rating);
                 vo.setLikes(likes);
+                vo.setImageUrl(image);
                 list.add(vo);
             }
 
