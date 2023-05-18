@@ -217,5 +217,18 @@ public class ReviewDAO {
         return false;
 
     }
-
+    //리뷰 삭제를 위한 리뷰 좋아요 삭제
+    public void likeDelete(int id) {
+        try {
+            String sql = "DELETE FROM REVIEW_LIKE WHERE REVIEW_ID = ?";
+            conn = Common.getConnection();
+            pStmt = conn.prepareStatement(sql);
+            pStmt.setInt(1,id);
+            pStmt.executeUpdate();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        Common.close(pStmt);
+        Common.close(conn);
+    }
 }
