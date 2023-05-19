@@ -55,7 +55,7 @@ public class RestMenuDAO {
         List<RestMenuVO> list = new ArrayList<>();
 
         try{
-            String sql ="SELECT * FROM R_MENU WHERE RESTAURANT_ID = ?";
+            String sql ="SELECT * FROM R_MENU WHERE RESTAURANT_ID = ? ORDER BY MENU_ID";
             conn = Common.getConnection();
             pStmt = conn.prepareStatement(sql);
             pStmt.setString(1, restId);
