@@ -40,11 +40,12 @@ public class SearchDAO {
             }
         }
 
-        if(kw != null && kw.length != 0 && (!region.isEmpty() || cat.length != 0 || price.length !=0)) sql = sql + " AND ";
+//        if((kw != null && kw.length != 0) && (!region.isEmpty() || cat.length != 0 || price.length !=0)) sql = sql + " AND ";
 
         List<String> regList = new ArrayList<>(region.keySet());
 
-        if(region != null || !region.isEmpty()) {
+        if(region != null && !region.isEmpty()) {
+            if(kw != null && kw.length !=0) sql = sql + " AND ";
             //키가 여러 개일 경우, 쿼리문에서 괄호 포함 때문에 경우의 수를 나눠야해서 리스트로 만든 후 인덱스 출력
             for(int i = 0; i < regList.size(); i++) {
                 String state = regList.get(i);
@@ -117,7 +118,7 @@ public class SearchDAO {
 
         // 앞 배열이 비어있지 않으면 or 붙이고 아니면 처음에 안 붙이고 카테고리 바뀔 때 AND 사용
         if(cat != null && cat.length != 0) {
-            if (region != null && !region.isEmpty()) {
+            if ((region != null && !region.isEmpty()) || (kw != null && kw.length != 0)) {
                 sql = sql + " AND ";
                 for (int i = 0; i < cat.length; i++) {
                     if(cat.length != 1) {
@@ -139,21 +140,28 @@ public class SearchDAO {
 
         if(price != null && price.length != 0) {
             for (int i = 0; i < price.length; i++) {
-                if (price[i].equals("1만원대")) price[i] = "10000 <= RM.MENU_PRICE AND RM.MENU_PRICE < 20000";
-                else if (price[i].equals("2만원대")) price[i] = "20000 <= RM.MENU_PRICE AND RM.MENU_PRICE < 30000";
-                else if (price[i].equals("3만원대")) price[i] = "30000 <= RM.MENU_PRICE AND RM.MENU_PRICE < 40000";
-                else if (price[i].equals("5만원대")) price[i] = "50000 <= RM.MENU_PRICE AND RM.MENU_PRICE < 60000";
-                else if (price[i].equals("10만원 이상")) price[i] = "100000 <= RM.MENU_PRICE";
-            }
-            if (!region.isEmpty() && cat.length != 0 && kw != null && kw.length != 0) {
-                for (int i = 0; i < price.length; i++) {
-                    if (price.length != 1) {
-                        if (i == 0) sql = sql + "(" + price[i];
-                        else if (i == price.length - 1) sql = sql + " OR " + price[i] + ")";
-                        else sql = sql + " OR " + price[i];
-                    } else sql = sql + " (" + price[i] + ") ";
+                switch (price[i]) {
+                    case "1만원대":
+                        price[i] = "(10000 <= RM.MENU_PRICE AND RM.MENU_PRICE < 20000)";
+                        break;
+                    case "2만원대":
+                        price[i] = "(20000 <= RM.MENU_PRICE AND RM.MENU_PRICE < 30000)";
+                        break;
+                    case "3만원대":
+                        price[i] = "(30000 <= RM.MENU_PRICE AND RM.MENU_PRICE < 40000)";
+                        break;
+                    case "5만원대":
+                        price[i] = "(50000 <= RM.MENU_PRICE AND RM.MENU_PRICE < 60000)";
+                        break;
+                    case "10만원 이상":
+                        price[i] = "(100000 <= RM.MENU_PRICE)";
+                        break;
+                    default:
+                        break;
                 }
-            } else {
+            }
+            if ((!region.isEmpty()&&region != null) || (cat != null && cat.length != 0) || (kw != null && kw.length != 0)) {
+
                 for (int i = 0; i < price.length; i++) {
                     if (price.length != 1) {
                         if (i == 0) sql = sql + " AND (" + price[i];
@@ -161,19 +169,38 @@ public class SearchDAO {
                         else sql = sql + " OR " + price[i];
                     } else sql = sql + " AND (" + price[i] + ") ";
                 }
+
+            } else {
+                for (int i = 0; i < price.length; i++) {
+                    if (price.length != 1) {
+                        if (i == 0) sql = sql + "(" + price[i];
+                        else if (i == price.length - 1) sql = sql + " OR " + price[i] + ")";
+                        else sql = sql + " OR " + price[i];
+                    } else sql = sql + " (" + price[i] + ") ";
+                }
             }
         }
 
         sql = sql + ") GROUP BY R.RESTAURANT_ID, RESTAURANT_NAME, RESTAURANT_ADDR, RESTAURANT_CATEGORY, RESERVATION_POSSIBILITY, RESTAURANT_PHONE,RESTAURANT_IMAGE_FILE_NAME";
 
-        if(rat != null){
-
-
-
-            if(rat.equals("3.0 이상")) rat = " HAVING 3.0 <= TRUNC(AVG(RATING),1)";
-            else if(rat.equals("3.5 이상")) rat = " HAVING 3.5 <= TRUNC(AVG(RATING),1)";
-            else if(rat.equals("4.0 이상")) rat = " HAVING 4.0 <= TRUNC(AVG(RATING),1)";
-            else if(rat.equals("4.5 이상")) rat = " HAVING 4.5 <= TRUNC(AVG(RATING),1)";
+        if(rat != null && rat.length() != 0){
+            switch (rat) {
+                case "3.0 이상":
+                    rat = " HAVING 3.0 <= TRUNC(AVG(RATING),1)";
+                    break;
+                case "3.5 이상":
+                    rat = " HAVING 3.5 <= TRUNC(AVG(RATING),1)";
+                    break;
+                case "4.0 이상":
+                    rat = " HAVING 4.0 <= TRUNC(AVG(RATING),1)";
+                    break;
+                case "4.5 이상":
+                    rat = " HAVING 4.5 <= TRUNC(AVG(RATING),1)";
+                    break;
+                default:
+                    // 기본적으로 처리할 작업
+                    break;
+            }
 
 
             sql = sql + rat;
